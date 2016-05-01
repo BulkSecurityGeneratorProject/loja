@@ -1,0 +1,22 @@
+{
+    "lojaApp": {
+        "fornecedor" : {
+            "home": {
+                "title": "Fornecedors",
+                "createLabel": "Criar um(a) novo(a) Fornecedor",
+                "createOrEditLabel": "Criar ou editar um(a) Fornecedor",
+                "search": "Search for Fornecedor"
+            },
+            "created": "A new Fornecedor is created with identifier {{ param }}",
+            "updated": "A Fornecedor is updated with identifier {{ param }}",
+            "deleted": "A Fornecedor is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Fornecedor {{ id }}?"
+            },
+            "detail": {
+                "title": "Fornecedor"
+            },
+            "nome": "Nome"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "cliente" : {
+            "home": {
+                "title": "Clientes",
+                "createLabel": "Criar um(a) novo(a) Cliente",
+                "createOrEditLabel": "Criar ou editar um(a) Cliente",
+                "search": "Search for Cliente"
+            },
+            "created": "A new Cliente is created with identifier {{ param }}",
+            "updated": "A Cliente is updated with identifier {{ param }}",
+            "deleted": "A Cliente is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Cliente {{ id }}?"
+            },
+            "detail": {
+                "title": "Cliente"
+            },
+            "nome": "Nome",
+            "email": "Email"
+        }
+    }
+}

@@ -1,0 +1,21 @@
+version: '2'
+services:
+    loja-app:
+        image: loja
+        external_links:
+            - loja-postgresql:postgresql
+            - loja-elasticsearch:elasticsearch
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/loja
+            - SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES=elasticsearch:9300
+        ports:
+            - 8080:8080
+    loja-postgresql:
+        extends:
+            file: postgresql.yml
+            service: loja-postgresql
+    loja-elasticsearch:
+        extends:
+            file: elasticsearch.yml
+            service: loja-elasticsearch
