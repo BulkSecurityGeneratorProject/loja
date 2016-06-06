@@ -1,5 +1,7 @@
 package br.com.rogrs.loja.web.rest.dto;
 
+import br.com.rogrs.loja.config.Constants;
+
 import br.com.rogrs.loja.domain.Authority;
 import br.com.rogrs.loja.domain.User;
 
@@ -13,8 +15,8 @@ import java.util.stream.Collectors;
  */
 public class UserDTO {
 
-    @Pattern(regexp = "^[a-z0-9]*$")
     @NotNull
+    @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
     private String login;
 
@@ -48,7 +50,7 @@ public class UserDTO {
     public UserDTO(String login, String firstName, String lastName,
         String email, boolean activated, String langKey, Set<String> authorities) {
 
-        this.login = login;        
+        this.login = login;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

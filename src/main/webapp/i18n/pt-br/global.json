@@ -7,8 +7,6 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entidades",
-                "cliente": "Cliente",
-                "fornecedor": "Fornecedor",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -75,6 +73,9 @@
         },
         "field": {
             "id" : "Código"
+        },
+        "ribbon": {
+            "dev":"Development"
         }
     },
     "entity": {
@@ -85,6 +86,7 @@
             "cancel": "Cancelar",
             "delete": "Excluir",
             "edit": "Editar",
+            "open": "Open",
             "save": "Salvar",
             "view": "Visualizar"
         },
@@ -110,6 +112,7 @@
     },
     "error": {
         "server.not.reachable": "Servidor indisponível",
+        "url.not.found": "Not found",
         "NotNull": "O Campo {{fieldName}} não pode ser vazio!",
         "Size": "O campo {{fieldName}} não obedece os requisitos de tamanho mínimo ou máximo!",
         "userexists": "Usuário já existente!",

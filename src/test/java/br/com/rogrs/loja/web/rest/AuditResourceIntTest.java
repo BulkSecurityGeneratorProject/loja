@@ -1,21 +1,15 @@
 package br.com.rogrs.loja.web.rest;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import javax.inject.Inject;
-
+import br.com.rogrs.loja.LojaApp;
+import br.com.rogrs.loja.config.audit.AuditEventConverter;
+import br.com.rogrs.loja.domain.PersistentAuditEvent;
+import br.com.rogrs.loja.repository.PersistenceAuditEventRepository;
+import br.com.rogrs.loja.service.AuditEventService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -25,13 +19,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
-import br.com.rogrs.loja.LojaApp;
-import br.com.rogrs.loja.config.audit.AuditEventConverter;
-import br.com.rogrs.loja.domain.PersistentAuditEvent;
-import br.com.rogrs.loja.repository.PersistenceAuditEventRepository;
-import br.com.rogrs.loja.service.AuditEventService;
+import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the AuditResource REST controller.
@@ -91,7 +86,7 @@ public class AuditResourceIntTest {
         auditEventRepository.save(auditEvent);
 
         // Get all the audits
-        restAuditMockMvc.perform(get("/api/audits"))
+        restAuditMockMvc.perform(get("/management/jhipster/audits"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
@@ -103,7 +98,7 @@ public class AuditResourceIntTest {
         auditEventRepository.save(auditEvent);
 
         // Get the audit
-        restAuditMockMvc.perform(get("/api/audits/{id}", auditEvent.getId()))
+        restAuditMockMvc.perform(get("/management/jhipster/audits/{id}", auditEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
@@ -119,7 +114,7 @@ public class AuditResourceIntTest {
         String toDate = SAMPLE_TIMESTAMP.plusDays(1).format(FORMATTER);
 
         // Get the audit
-        restAuditMockMvc.perform(get("/api/audits?fromDate="+fromDate+"&toDate="+toDate))
+        restAuditMockMvc.perform(get("/management/jhipster/audits?fromDate="+fromDate+"&toDate="+toDate))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
@@ -135,7 +130,7 @@ public class AuditResourceIntTest {
         String toDate = SAMPLE_TIMESTAMP.minusDays(1).format(FORMATTER);
 
         // Query audits but expect no results
-        restAuditMockMvc.perform(get("/api/audits?fromDate=" + fromDate + "&toDate=" + toDate))
+        restAuditMockMvc.perform(get("/management/jhipster/audits?fromDate=" + fromDate + "&toDate=" + toDate))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(header().string("X-Total-Count", "0"));
@@ -144,7 +139,7 @@ public class AuditResourceIntTest {
     @Test
     public void getNonExistingAudit() throws Exception {
         // Get the audit
-        restAuditMockMvc.perform(get("/api/audits/{id}", Long.MAX_VALUE))
+        restAuditMockMvc.perform(get("/management/jhipster/audits/{id}", Long.MAX_VALUE))
                 .andExpect(status().isNotFound());
     }
 

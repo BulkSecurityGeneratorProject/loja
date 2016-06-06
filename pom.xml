@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <version>1.3.3.RELEASE</version>
+        <version>1.3.5.RELEASE</version>
         <relativePath />
     </parent>
 
@@ -13,7 +13,7 @@
     <artifactId>loja</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>loja</name>
+    <name>Loja</name>
 
     <prerequisites>
         <maven>3.0.0</maven>
@@ -24,10 +24,11 @@
         <awaitility.version>1.7.0</awaitility.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang.version>2.6</commons-lang.version>
+        <frontend-maven-plugin.version>1.0</frontend-maven-plugin.version>
         <gatling-maven-plugin.version>2.1.7</gatling-maven-plugin.version>
         <gatling.version>2.1.7</gatling.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <hikaricp.version>2.4.3</hikaricp.version>
+        <hikaricp.version>2.4.6</hikaricp.version>
         <jacoco-maven-plugin.version>0.7.6.201602180812</jacoco-maven-plugin.version>
         <java.version>1.8</java.version>
         <javax.inject.version>1</javax.inject.version>
@@ -42,11 +43,13 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <metrics-spark-reporter.version>1.2</metrics-spark-reporter.version>
         <metrics-spring.version>3.1.3</metrics-spring.version>
-        <postgresql.version>9.4-1203-jdbc42</postgresql.version>
+        <!-- These remain empty unless the corresponding profile is active -->
+        <profile.no-liquibase />
+        <profile.no-swagger />
         <!-- Sonar properties -->
         <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
         <run.addResources>false</run.addResources>
-        <sonar-maven-plugin.version>2.7.1</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>3.0.2</sonar-maven-plugin.version>
         <sonar.exclusions>src/main/webapp/content/**/*.*, src/main/webapp/bower_components/**/*.*, target/www/**/*.*</sonar.exclusions>
         <sonar.jacoco.itReportPath>${project.testresult.directory}/coverage/jacoco/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.jacoco.reportPath>${project.testresult.directory}/coverage/jacoco/jacoco.exec</sonar.jacoco.reportPath>
@@ -59,7 +62,7 @@
         <sonar.surefire.reportsPath>${project.testresult.directory}/surefire-reports</sonar.surefire.reportsPath>
         <sonar.tests>${project.basedir}/src/test/</sonar.tests>
         <sortpom-maven-plugin.version>2.5.0</sortpom-maven-plugin.version>
-        <spring-security.version>4.0.4.RELEASE</spring-security.version>
+        <spring-security.version>4.1.0.RELEASE</spring-security.version>
         <springfox.version>2.4.0</springfox.version>
     </properties>
 
@@ -67,7 +70,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -227,6 +229,10 @@
             <artifactId>javax.inject</artifactId>
             <version>${javax.inject.version}</version>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
         <!-- Spring Cloud -->
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -286,11 +292,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-jdk8</artifactId>
             <version>${mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -375,37 +376,8 @@
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>spring-milestones</id>
-            <url>http://repo.spring.io/milestone</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-milestones</id>
-            <url>http://repo.spring.io/milestone</url>
-        </pluginRepository>
-    </pluginRepositories>
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
-        <resources>
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources/</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <filtering>false</filtering>
-                <directory>src/main/resources/</directory>
-                <excludes>
-                    <exclude>**/*.xml</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <pluginManagement>
             <plugins>
                 <!--
@@ -424,7 +396,7 @@
                                     <pluginExecutionFilter>
                                         <groupId>org.jacoco</groupId>
                                         <artifactId>jacoco-maven-plugin</artifactId>
-                                        <versionRange>[0.7.4,)</versionRange>
+                                        <versionRange>${jacoco-maven-plugin.version}</versionRange>
                                         <goals>
                                             <goal>prepare-agent</goal>
                                         </goals>
@@ -435,11 +407,14 @@
                                 </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>com.github.trecloux</groupId>
-                                        <artifactId>yeoman-maven-plugin</artifactId>
-                                        <versionRange>[0.5,)</versionRange>
+                                        <groupId>com.github.eirslett</groupId>
+                                        <artifactId>frontend-maven-plugin</artifactId>
+                                        <versionRange>${frontend-maven-plugin.version}</versionRange>
                                         <goals>
-                                            <goal>build</goal>
+                                            <goal>install-node-and-npm</goal>
+                                            <goal>npm</goal>
+                                            <goal>bower</goal>
+                                            <goal>gulp</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
@@ -537,6 +512,44 @@
                         </requireJavaVersion>
                     </rules>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/classes</outputDirectory>
+                            <useDefaultDelimiters>false</useDefaultDelimiters>
+                            <delimiters>
+                                <delimiter>#</delimiter>
+                            </delimiters>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                        <include>**/*.yml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>src/main/resources/</directory>
+                                    <filtering>false</filtering>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                        <exclude>**/*.yml</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -657,9 +670,6 @@
                     Enable the line below to have remote debugging of your application on port 5005
                     <jvmArguments>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005</jvmArguments>
                     -->
-                    <arguments>
-                        <argument>--spring.profiles.active=dev</argument>
-                    </arguments>
                 </configuration>
             </plugin>
             <!-- jhipster-needle-maven-add-plugin -->
@@ -677,6 +687,18 @@
     </reporting>
 
     <profiles>
+        <profile>
+            <id>no-liquibase</id>
+            <properties>
+                <profile.no-liquibase>,no-liquibase</profile.no-liquibase>
+            </properties>
+        </profile>
+        <profile>
+            <id>no-swagger</id>
+            <properties>
+                <profile.no-swagger>,no-swagger</profile.no-swagger>
+            </properties>
+        </profile>
         <profile>
             <id>dev</id>
             <activation>
@@ -697,6 +719,8 @@
             <properties>
                 <!-- log configuration -->
                 <logback.loglevel>DEBUG</logback.loglevel>
+                <!-- default Spring profiles -->
+                <spring.profiles.active>dev${profile.no-liquibase}${profile.no-swagger}</spring.profiles.active>
             </properties>
             <dependencies>
                 <dependency>
@@ -715,25 +739,58 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.github.trecloux</groupId>
-                        <artifactId>yeoman-maven-plugin</artifactId>
-                        <version>0.5</version>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <version>1.0</version>
                         <executions>
                             <execution>
-                                <id>run-frontend-build</id>
-                                <phase>generate-resources</phase>
+                                <id>install node and npm</id>
                                 <goals>
-                                    <goal>build</goal>
+                                    <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <buildTool>gulp</buildTool>
-                                    <buildArgs>build --no-notification</buildArgs>
+                                    <nodeVersion>v4.4.3</nodeVersion>
+                                    <npmVersion>3.8.3</npmVersion>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>npm install</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>bower install</id>
+                                <goals>
+                                    <goal>bower</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install --no-color</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>gulp build</id>
+                                <goals>
+                                    <goal>gulp</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>build --no-notification</arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>gulp test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>gulp</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>test --no-notification</arguments>
                                 </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <yeomanProjectDirectory>${project.basedir}</yeomanProjectDirectory>
-                        </configuration>
                     </plugin>
                     <plugin>
                         <artifactId>maven-clean-plugin</artifactId>
@@ -759,9 +816,6 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
                             <executable>true</executable>
-                            <arguments>
-                                <argument>--spring.profiles.active=prod</argument>
-                            </arguments>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -769,6 +823,8 @@
             <properties>
                 <!-- log configuration -->
                 <logback.loglevel>INFO</logback.loglevel>
+                <!-- default Spring profiles -->
+                <spring.profiles.active>prod${profile.no-liquibase}${profile.no-swagger}</spring.profiles.active>
             </properties>
             <dependencies>
                 <dependency>

@@ -11,10 +11,20 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+management:
+    context-path: /management
+    health:
+        mail:
+            enabled: false # When using the MailService, configure an SMTP server and set this to true
 
 spring:
     application:
         name: loja
+    profiles:
+        # The commented value for `active` can be replaced with valid spring profiles to load.
+        # Otherwise, it will be filled in by maven when building the WAR file
+        # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+        active: #spring.profiles.active#
     jpa:
         open-in-view: false
         hibernate:
@@ -50,10 +60,6 @@ jhipster:
         #max-age: 1800
     mail:
         from: loja@localhost
-    security:
-        rememberMe:
-            # security key (this key should be unique for your application, and kept secret)
-            key: beb5edd1eac8a6cfa04f38225303abfa4a086c2a
     swagger:
         title: loja API
         description: loja API documentation
@@ -64,3 +70,6 @@ jhipster:
         contactEmail:
         license:
         licenseUrl:
+    ribbon:
+        # comma seperated list of profiles to show a ribbon on the GUI
+        displayOnActiveProfiles: dev

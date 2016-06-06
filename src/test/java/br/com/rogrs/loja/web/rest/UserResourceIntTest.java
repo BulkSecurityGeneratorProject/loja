@@ -1,12 +1,9 @@
 package br.com.rogrs.loja.web.rest;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import javax.inject.Inject;
-
+import br.com.rogrs.loja.LojaApp;
+import br.com.rogrs.loja.domain.User;
+import br.com.rogrs.loja.repository.UserRepository;
+import br.com.rogrs.loja.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +16,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import br.com.rogrs.loja.LojaApp;
-import br.com.rogrs.loja.repository.UserRepository;
-import br.com.rogrs.loja.service.UserService;
+import javax.inject.Inject;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the UserResource REST controller.

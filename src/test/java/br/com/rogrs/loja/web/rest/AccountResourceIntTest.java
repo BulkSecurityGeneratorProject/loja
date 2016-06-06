@@ -152,11 +152,11 @@ public class AccountResourceIntTest {
             "Shmoe",                // lastName
             "joe@example.com",      // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         restMvc.perform(
@@ -180,11 +180,11 @@ public class AccountResourceIntTest {
             "One",                  // lastName
             "funky@example.com",    // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         restUserMockMvc.perform(
@@ -208,11 +208,11 @@ public class AccountResourceIntTest {
             "Green",            // lastName
             "invalid",          // e-mail <-- invalid
             true,               // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         restUserMockMvc.perform(
@@ -236,39 +236,11 @@ public class AccountResourceIntTest {
             "Green",            // lastName
             "bob@example.com",  // e-mail
             true,               // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
-        );
-
-        restUserMockMvc.perform(
-            post("/api/register")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(invalidUser)))
-            .andExpect(status().isBadRequest());
-
-        Optional<User> user = userRepository.findOneByLogin("bob");
-        assertThat(user.isPresent()).isFalse();
-    }    
-
-    @Test
-    @Transactional
-    public void testRegisterEmailEmpty() throws Exception {
-        ManagedUserDTO invalidUser = new ManagedUserDTO(
-            null,                   // id
-            "bob",              // login
-            "password",         // password
-            "Bob",              // firstName
-            "Green",            // lastName
-            "",                 // e-mail <-- empty
-            true,               // activated
-            "en",               // langKey
-            new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
-            null,                   // createdDate
-            null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         restUserMockMvc.perform(
@@ -293,11 +265,11 @@ public class AccountResourceIntTest {
             "Something",            // lastName
             "alice@example.com",    // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         // Duplicate login, different e-mail
@@ -334,11 +306,11 @@ public class AccountResourceIntTest {
             "Doe",                  // lastName
             "john@example.com",     // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         // Duplicate e-mail, different login
@@ -374,11 +346,11 @@ public class AccountResourceIntTest {
             "Guy",                  // lastName
             "badguy@example.com",   // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.ADMIN)),
             null,                   // createdDate
             null,                   // lastModifiedBy
-            null                    // lastModifiedDate 
+            null                    // lastModifiedDate
         );
 
         restMvc.perform(
@@ -394,7 +366,7 @@ public class AccountResourceIntTest {
     }
 
     @Test
-    @Transactional    
+    @Transactional
     public void testSaveInvalidLogin() throws Exception {
         UserDTO invalidUser = new UserDTO(
             "funky-log!n",          // login <-- invalid
@@ -402,7 +374,7 @@ public class AccountResourceIntTest {
             "One",                  // lastName
             "funky@example.com",    // e-mail
             true,                   // activated
-            "en",               // langKey
+            "pt-br",               // langKey
             new HashSet<>(Arrays.asList(AuthoritiesConstants.USER))
         );
 
@@ -414,5 +386,5 @@ public class AccountResourceIntTest {
 
         Optional<User> user = userRepository.findOneByEmail("funky@example.com");
         assertThat(user.isPresent()).isFalse();
-    }    
+    }
 }
