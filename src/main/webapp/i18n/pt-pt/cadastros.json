@@ -1,0 +1,27 @@
+{
+    "lojaApp": {
+        "cadastros" : {
+            "home": {
+                "title": "Cadastros",
+                "createLabel": "Criar um(a) novo(a) Cadastros",
+                "createOrEditLabel": "Criar ou editar um(a) Cadastros",
+                "search": "Search for Cadastros"
+            },
+            "created": "A new Cadastros is created with identifier {{ param }}",
+            "updated": "A Cadastros is updated with identifier {{ param }}",
+            "deleted": "A Cadastros is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Cadastros {{ id }}?"
+            },
+            "detail": {
+                "title": "Cadastros"
+            },
+            "nome": "Nome",
+            "tipoPessoa": "Tipo Pessoa",
+            "tipoCadastro": "Tipo Cadastro",
+            "email": "Email",
+            "observacoes": "Observacoes",
+            "pedidos": "Pedidos"
+        }
+    }
+}

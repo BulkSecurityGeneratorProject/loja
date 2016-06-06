@@ -16,7 +16,7 @@ entity Cadastros {
 }
 
 entity Categorias {
-	descricao String required maxlength(60)
+	descricao String required  
 }
 
 entity Marcas {
@@ -71,15 +71,21 @@ entity Localidades {
 	UF String maxlength(2)
 }
 
-entity Vendas {
-	dataVenda LocalDate required
+enum TipoPedido {
+    VENDA, COMPRA, PEDIDO_COMPRA, PEDIDO_VENDA, DEVOLUCAO
 }
 
-entity ItensVendas {
-	qtdeVenda Float required,
-        valorVenda BigDecimal required   
+entity Pedidos {
+	dataPedido LocalDate required,
+        tipoPedido TipoPedido required,
+        descricao String required maxlength(60)
 }
 
+entity Itens {
+	qtde Float required,
+        valor BigDecimal required,
+        valorDesconto BigDecimal   
+}
 
 relationship OneToMany {
   Marcas{produtos} to Produtos{marcas(descricao)}
@@ -95,6 +101,18 @@ relationship OneToMany {
 
 relationship OneToMany {
   Tamanhos{produtos} to Produtos{tamanhos(descricao)}
+}
+
+relationship OneToMany {
+  Cadastros{pedidos} to Pedidos{cadastros(nome)}
+}
+
+relationship OneToMany {
+  Pedidos{itens} to Itens{pedidos(descricao)}
+}
+
+relationship OneToMany {
+  Produtos{itens} to Itens{produtos(descricao)}
 }
 
 

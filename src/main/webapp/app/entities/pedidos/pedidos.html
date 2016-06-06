@@ -1,0 +1,81 @@
+<div>
+    <h2 translate="lojaApp.pedidos.home.title">Pedidos</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="pedidos.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  translate="lojaApp.pedidos.home.createLabel">
+                        Create new Pedidos
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'lojaApp.pedidos.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dataPedido"><span translate="lojaApp.pedidos.dataPedido">Data Pedido</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tipoPedido"><span translate="lojaApp.pedidos.tipoPedido">Tipo Pedido</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="descricao"><span translate="lojaApp.pedidos.descricao">Descricao</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cadastros.nome"><span translate="lojaApp.pedidos.cadastros">Cadastros</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+                <tr ng-repeat="pedidos in vm.pedidos track by pedidos.id">
+                    <td><a ui-sref="pedidos-detail({id:pedidos.id})">{{pedidos.id}}</a></td>
+                        <td>{{pedidos.dataPedido | date:'mediumDate'}}</td>
+                    <td translate="{{'lojaApp.TipoPedido.' + pedidos.tipoPedido}}">{{pedidos.tipoPedido}}</td>
+                    <td>{{pedidos.descricao}}</td>
+                    <td>
+                        <a ui-sref="cadastros-detail({id:pedidos.cadastros.id})">{{pedidos.cadastros.nome}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="pedidos-detail({id:pedidos.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="pedidos.edit({id:pedidos.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="pedidos.delete({id:pedidos.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

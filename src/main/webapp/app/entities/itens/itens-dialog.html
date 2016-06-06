@@ -1,0 +1,76 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myItensLabel" translate="lojaApp.itens.home.createOrEditLabel">Create or edit a Itens</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.itens.id">
+            <label for="id" translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.itens.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.itens.qtde" for="field_qtde">Qtde</label>
+            <input type="number" class="form-control" name="qtde" id="field_qtde"
+                    ng-model="vm.itens.qtde"
+                    required />
+            <div ng-show="editForm.qtde.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.qtde.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.qtde.$error.number" translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.itens.valor" for="field_valor">Valor</label>
+            <input type="number" class="form-control" name="valor" id="field_valor"
+                    ng-model="vm.itens.valor"
+                    required />
+            <div ng-show="editForm.valor.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.valor.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.valor.$error.number" translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.itens.valorDesconto" for="field_valorDesconto">Valor Desconto</label>
+            <input type="number" class="form-control" name="valorDesconto" id="field_valorDesconto"
+                    ng-model="vm.itens.valorDesconto"
+                     />
+        </div>
+
+        <div class="form-group">
+            <label translate="lojaApp.itens.pedidos" for="field_pedidos">Pedidos</label>
+            <select class="form-control" id="field_pedidos" name="pedidos" ng-model="vm.itens.pedidos" ng-options="pedidos as pedidos.descricao for pedidos in vm.pedidos track by pedidos.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label translate="lojaApp.itens.produtos" for="field_produtos">Produtos</label>
+            <select class="form-control" id="field_produtos" name="produtos" ng-model="vm.itens.produtos" ng-options="produtos as produtos.descricao for produtos in vm.produtos track by produtos.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

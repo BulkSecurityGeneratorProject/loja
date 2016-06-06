@@ -1,0 +1,91 @@
+<div>
+    <h2 translate="lojaApp.gradeProdutos.home.title">Grade Produtos</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="grade-produtos.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  translate="lojaApp.gradeProdutos.home.createLabel">
+                        Create new Grade Produtos
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'lojaApp.gradeProdutos.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
+                    <th jh-sort-by="id"><span translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="marcas.descricao"><span translate="lojaApp.gradeProdutos.marcas">Marcas</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="categorias.descricao"><span translate="lojaApp.gradeProdutos.categorias">Categorias</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cores.descricao"><span translate="lojaApp.gradeProdutos.cores">Cores</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="tamanhos.descricao"><span translate="lojaApp.gradeProdutos.tamanhos">Tamanhos</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="produtos.descricao"><span translate="lojaApp.gradeProdutos.produtos">Produtos</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
+                <tr ng-repeat="gradeProdutos in vm.gradeProdutos track by gradeProdutos.id">
+                    <td><a ui-sref="grade-produtos-detail({id:gradeProdutos.id})">{{gradeProdutos.id}}</a></td>
+                    <td>
+                        <a ui-sref="marcas-detail({id:gradeProdutos.marcas.id})">{{gradeProdutos.marcas.descricao}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="categorias-detail({id:gradeProdutos.categorias.id})">{{gradeProdutos.categorias.descricao}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="cores-detail({id:gradeProdutos.cores.id})">{{gradeProdutos.cores.descricao}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="tamanhos-detail({id:gradeProdutos.tamanhos.id})">{{gradeProdutos.tamanhos.descricao}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="produtos-detail({id:gradeProdutos.produtos.id})">{{gradeProdutos.produtos.descricao}}</a>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="grade-produtos-detail({id:gradeProdutos.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="grade-produtos.edit({id:gradeProdutos.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="grade-produtos.delete({id:gradeProdutos.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "itens",
+      "otherEntityName": "itens",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "pedidos"
+    },
+    {
+      "relationshipId": 2,
+      "relationshipName": "cadastros",
+      "otherEntityName": "cadastros",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "nome"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "dataPedido",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "tipoPedido",
+      "fieldType": "TipoPedido",
+      "fieldValues": "VENDA,COMPRA,PEDIDO_COMPRA,PEDIDO_VENDA,DEVOLUCAO",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "descricao",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "required",
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 60
+    }
+  ],
+  "changelogDate": "20160606195942",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "no"
+}

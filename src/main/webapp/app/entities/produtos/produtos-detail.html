@@ -1,0 +1,46 @@
+
+<div>
+    <h2><span translate="lojaApp.produtos.detail.title">Produtos</span> {{vm.produtos.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="lojaApp.produtos.descricao">Descricao</span></dt>
+        <dd>
+            <span>{{vm.produtos.descricao}}</span>
+        </dd>
+        <dt><span translate="lojaApp.produtos.codigoEAN">Codigo EAN</span></dt>
+        <dd>
+            <span>{{vm.produtos.codigoEAN}}</span>
+        </dd>
+        <dt><span translate="lojaApp.produtos.qtdeAtual">Qtde Atual</span></dt>
+        <dd>
+            <span>{{vm.produtos.qtdeAtual}}</span>
+        </dd>
+        <dt><span translate="lojaApp.produtos.observacoes">Observacoes</span></dt>
+        <dd>
+            <span>{{vm.produtos.observacoes}}</span>
+        </dd>
+        <dt><span translate="lojaApp.produtos.marcas">Marcas</span></dt>
+        <dd>
+            <a ui-sref="marcas-detail({id:vm.produtos.marcas.id})">{{vm.produtos.marcas.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.produtos.categorias">Categorias</span></dt>
+        <dd>
+            <a ui-sref="categorias-detail({id:vm.produtos.categorias.id})">{{vm.produtos.categorias.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.produtos.cores">Cores</span></dt>
+        <dd>
+            <a ui-sref="cores-detail({id:vm.produtos.cores.id})">{{vm.produtos.cores.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.produtos.tamanhos">Tamanhos</span></dt>
+        <dd>
+            <a ui-sref="tamanhos-detail({id:vm.produtos.tamanhos.id})">{{vm.produtos.tamanhos.descricao}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

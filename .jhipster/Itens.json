@@ -1,0 +1,45 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "pedidos",
+      "otherEntityName": "pedidos",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    },
+    {
+      "relationshipId": 2,
+      "relationshipName": "produtos",
+      "otherEntityName": "produtos",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "qtde",
+      "fieldType": "Float",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "valor",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "valorDesconto",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "changelogDate": "20160606195943",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "no"
+}

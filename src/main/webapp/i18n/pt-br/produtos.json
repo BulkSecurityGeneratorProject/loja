@@ -1,0 +1,31 @@
+{
+    "lojaApp": {
+        "produtos" : {
+            "home": {
+                "title": "Produtos",
+                "createLabel": "Criar novo Produtos",
+                "createOrEditLabel": "Criar ou editar Produtos",
+                "search": "Pesquisar por Produtos"
+            },
+            "created": "Um novo Produtos é criado com o identificador {{ param }}",
+            "updated": "Um Produtos é atualizado com o identificador {{ param }}",
+            "deleted": "Um Produtos é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Produtos {{ id }}?"
+            },
+            "detail": {
+                "title": "Produtos"
+            },
+            "descricao": "Descricao",
+            "codigoEAN": "Codigo EAN",
+            "qtdeAtual": "Qtde Atual",
+            "observacoes": "Observacoes",
+            "gradeProdutos": "Grade Produtos",
+            "itens": "Itens",
+            "marcas": "Marcas",
+            "categorias": "Categorias",
+            "cores": "Cores",
+            "tamanhos": "Tamanhos"
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "lojaApp": {
+        "TipoCadastro" : {
+            "null": "",
+            "CLIENTE": "CLIENTE",
+            "FORNECEDOR": "FORNECEDOR",
+            "VENDEDOR": "VENDEDOR"
+        }
+    }
+}

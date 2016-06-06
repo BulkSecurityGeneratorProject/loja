@@ -1,0 +1,24 @@
+{
+    "lojaApp": {
+        "categorias" : {
+            "home": {
+                "title": "Categorias",
+                "createLabel": "Criar um(a) novo(a) Categorias",
+                "createOrEditLabel": "Criar ou editar um(a) Categorias",
+                "search": "Search for Categorias"
+            },
+            "created": "A new Categorias is created with identifier {{ param }}",
+            "updated": "A Categorias is updated with identifier {{ param }}",
+            "deleted": "A Categorias is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Categorias {{ id }}?"
+            },
+            "detail": {
+                "title": "Categorias"
+            },
+            "descricao": "Descricao",
+            "gradeProdutos": "Grade Produtos",
+            "produtos": "Produtos"
+        }
+    }
+}

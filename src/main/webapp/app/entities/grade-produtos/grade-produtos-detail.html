@@ -1,0 +1,34 @@
+
+<div>
+    <h2><span translate="lojaApp.gradeProdutos.detail.title">Grade Produtos</span> {{vm.gradeProdutos.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span translate="lojaApp.gradeProdutos.marcas">Marcas</span></dt>
+        <dd>
+            <a ui-sref="marcas-detail({id:vm.gradeProdutos.marcas.id})">{{vm.gradeProdutos.marcas.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.gradeProdutos.categorias">Categorias</span></dt>
+        <dd>
+            <a ui-sref="categorias-detail({id:vm.gradeProdutos.categorias.id})">{{vm.gradeProdutos.categorias.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.gradeProdutos.cores">Cores</span></dt>
+        <dd>
+            <a ui-sref="cores-detail({id:vm.gradeProdutos.cores.id})">{{vm.gradeProdutos.cores.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.gradeProdutos.tamanhos">Tamanhos</span></dt>
+        <dd>
+            <a ui-sref="tamanhos-detail({id:vm.gradeProdutos.tamanhos.id})">{{vm.gradeProdutos.tamanhos.descricao}}</a>
+        </dd>
+        <dt><span translate="lojaApp.gradeProdutos.produtos">Produtos</span></dt>
+        <dd>
+            <a ui-sref="produtos-detail({id:vm.gradeProdutos.produtos.id})">{{vm.gradeProdutos.produtos.descricao}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

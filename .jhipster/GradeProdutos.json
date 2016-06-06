@@ -1,0 +1,44 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "marcas",
+      "otherEntityName": "marcas",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    },
+    {
+      "relationshipId": 2,
+      "relationshipName": "categorias",
+      "otherEntityName": "categorias",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    },
+    {
+      "relationshipId": 3,
+      "relationshipName": "cores",
+      "otherEntityName": "cores",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    },
+    {
+      "relationshipId": 4,
+      "relationshipName": "tamanhos",
+      "otherEntityName": "tamanhos",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    },
+    {
+      "relationshipId": 5,
+      "relationshipName": "produtos",
+      "otherEntityName": "produtos",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "descricao"
+    }
+  ],
+  "fields": [],
+  "changelogDate": "20160606195940",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "no"
+}

@@ -15,7 +15,7 @@
     "searchEngine": "elasticsearch",
     "buildTool": "maven",
     "enableSocialSignIn": false,
-    "rememberMeKey": "742a450b8602c943bb7a4b11537ee87201a9da6d",
+    "rememberMeKey": "a1f2693dd0fff4a05d31764211ba1d17ca547fbb",
     "useSass": false,
     "applicationType": "monolith",
     "testFrameworks": [

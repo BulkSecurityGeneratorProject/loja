@@ -1,0 +1,102 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myLocalidadesLabel" translate="lojaApp.localidades.home.createOrEditLabel">Create or edit a Localidades</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.localidades.id">
+            <label for="id" translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.localidades.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.localidades.endereco" for="field_endereco">Endereco</label>
+            <input type="text" class="form-control" name="endereco" id="field_endereco"
+                    ng-model="vm.localidades.endereco"
+                    required ng-maxlength="60" />
+            <div ng-show="editForm.endereco.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.endereco.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.endereco.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="60">
+                    This field cannot be longer than 60 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.localidades.cep" for="field_cep">Cep</label>
+            <input type="text" class="form-control" name="cep" id="field_cep"
+                    ng-model="vm.localidades.cep"
+                    required ng-maxlength="9" />
+            <div ng-show="editForm.cep.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.cep.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.cep.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="9">
+                    This field cannot be longer than 9 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.localidades.bairro" for="field_bairro">Bairro</label>
+            <input type="text" class="form-control" name="bairro" id="field_bairro"
+                    ng-model="vm.localidades.bairro"
+                    required ng-maxlength="60" />
+            <div ng-show="editForm.bairro.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.bairro.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.bairro.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="60">
+                    This field cannot be longer than 60 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.localidades.cidade" for="field_cidade">Cidade</label>
+            <input type="text" class="form-control" name="cidade" id="field_cidade"
+                    ng-model="vm.localidades.cidade"
+                    required ng-maxlength="60" />
+            <div ng-show="editForm.cidade.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.cidade.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.cidade.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="60">
+                    This field cannot be longer than 60 characters.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="lojaApp.localidades.uF" for="field_uF">U F</label>
+            <input type="text" class="form-control" name="uF" id="field_uF"
+                    ng-model="vm.localidades.uF"
+                    ng-maxlength="2" />
+            <div ng-show="editForm.uF.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.uF.$error.maxlength" translate="entity.validation.maxlength" translate-value-max="2">
+                    This field cannot be longer than 2 characters.
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,26 @@
+{
+    "lojaApp": {
+        "gradeProdutos" : {
+            "home": {
+                "title": "Grade Produtos",
+                "createLabel": "Criar novo Grade Produtos",
+                "createOrEditLabel": "Criar ou editar Grade Produtos",
+                "search": "Pesquisar por Grade Produtos"
+            },
+            "created": "Um novo Grade Produtos é criado com o identificador {{ param }}",
+            "updated": "Um Grade Produtos é atualizado com o identificador {{ param }}",
+            "deleted": "Um Grade Produtos é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Grade Produtos {{ id }}?"
+            },
+            "detail": {
+                "title": "Grade Produtos"
+            },
+            "marcas": "Marcas",
+            "categorias": "Categorias",
+            "cores": "Cores",
+            "tamanhos": "Tamanhos",
+            "produtos": "Produtos"
+        }
+    }
+}

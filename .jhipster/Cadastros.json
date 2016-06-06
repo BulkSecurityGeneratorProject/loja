@@ -1,0 +1,61 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "pedidos",
+      "otherEntityName": "pedidos",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "cadastros"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "nome",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 2,
+      "fieldName": "tipoPessoa",
+      "fieldType": "TipoPessoa",
+      "fieldValues": "FISICA,JURIDICA",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 3,
+      "fieldName": "tipoCadastro",
+      "fieldType": "TipoCadastro",
+      "fieldValues": "CLIENTE,FORNECEDOR,VENDEDOR",
+      "fieldValidateRules": [
+        "required"
+      ]
+    },
+    {
+      "fieldId": 4,
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 100
+    },
+    {
+      "fieldId": 5,
+      "fieldName": "observacoes",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "maxlength"
+      ],
+      "fieldValidateRulesMaxlength": 500
+    }
+  ],
+  "changelogDate": "20160606195934",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "no"
+}

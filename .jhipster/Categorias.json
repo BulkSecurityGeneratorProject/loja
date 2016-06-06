@@ -1,0 +1,32 @@
+{
+  "relationships": [
+    {
+      "relationshipId": 1,
+      "relationshipName": "gradeProdutos",
+      "otherEntityName": "gradeProdutos",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "categorias"
+    },
+    {
+      "relationshipId": 2,
+      "relationshipName": "produtos",
+      "otherEntityName": "produtos",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "categorias"
+    }
+  ],
+  "fields": [
+    {
+      "fieldId": 1,
+      "fieldName": "descricao",
+      "fieldType": "String",
+      "fieldValidateRules": [
+        "required"
+      ]
+    }
+  ],
+  "changelogDate": "20160606195935",
+  "dto": "no",
+  "pagination": "infinite-scroll",
+  "service": "no"
+}
