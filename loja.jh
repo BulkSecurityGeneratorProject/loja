@@ -7,12 +7,19 @@ enum TipoCadastro {
     CLIENTE, FORNECEDOR, VENDEDOR
 }
 
+enum Estados {
+    AC, AL, AM, AP, BA, CE, DF, ES, GO, MA, MG, MS, MT, PA, PB, PE, PI, PR, RJ, RN, RO, RR, RS, SC, SE, SP, TO
+}
+
+
+
 entity Cadastros {
 	nome String required,
         tipoPessoa TipoPessoa required,
         tipoCadastro TipoCadastro required,
         email String maxlength(100),
-        observacoes String maxlength(500)
+        observacoes String maxlength(500),
+        
 }
 
 entity Categorias {
@@ -68,7 +75,7 @@ entity Localidades {
 	cep String required maxlength(9),
         bairro String required maxlength(60),
 	cidade String required maxlength(60),
-	UF String maxlength(2)
+	UF Estados
 }
 
 enum TipoPedido {
@@ -85,6 +92,38 @@ entity Itens {
 	qtde Float required,
         valor BigDecimal required,
         valorDesconto BigDecimal   
+}
+
+
+entity Transacoes {
+    Transacao_ID String required maxlength(50),	
+    Cliente_Nome String required maxlength(50),	
+    Cliente_Email String required maxlength(50),	
+    Debito_Credito String required maxlength(50),	
+    Tipo_Transacao	
+    Status	
+    Tipo_Pagamento	
+    Valor_Bruto	
+    Valor_Desconto	
+    Valor_Taxa	
+    Valor_Liquido	
+    Transportadora	
+    Num_Envio	
+    Data_Transacao	
+    Data_Compensacao	
+    Ref_Transacao	
+    Parcelas	
+    Codigo_Usuario	
+    Codigo_Venda	
+    Serial_Leitor	
+    Recebimentos	
+    Recebidos	
+    Valor_Recebido	
+    Valor_Tarifa_Intermediacao	
+    Valor_Taxa_Intermediacao	
+    Valor_Taxa_Parcelamento	
+    Valor_Tarifa_Boleto
+
 }
 
 relationship OneToMany {

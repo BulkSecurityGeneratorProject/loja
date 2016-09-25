@@ -1,20 +1,29 @@
 package br.com.rogrs.loja.web.rest;
 
-import br.com.rogrs.loja.LojaApp;
-import br.com.rogrs.loja.domain.Produtos;
-import br.com.rogrs.loja.repository.ProdutosRepository;
-import br.com.rogrs.loja.repository.search.ProdutosSearchRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,13 +31,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import br.com.rogrs.loja.LojaApp;
+import br.com.rogrs.loja.domain.Marcas;
+import br.com.rogrs.loja.domain.Produtos;
+import br.com.rogrs.loja.repository.MarcasRepository;
+import br.com.rogrs.loja.repository.ProdutosRepository;
+import br.com.rogrs.loja.repository.search.ProdutosSearchRepository;
 
 
 /**
@@ -55,6 +63,10 @@ public class ProdutosResourceIntTest {
     @Inject
     private ProdutosRepository produtosRepository;
 
+    @Inject
+    private MarcasRepository marcasRepository;
+    
+    
     @Inject
     private ProdutosSearchRepository produtosSearchRepository;
 
@@ -249,4 +261,31 @@ public class ProdutosResourceIntTest {
             .andExpect(jsonPath("$.[*].qtdeAtual").value(hasItem(DEFAULT_QTDE_ATUAL.doubleValue())))
             .andExpect(jsonPath("$.[*].observacoes").value(hasItem(DEFAULT_OBSERVACOES.toString())));
     }
+    
+    @Test
+    @Transactional
+    public void Produtos() throws Exception {
+        Marcas marcas = new Marcas();
+        marcas.setDescricao("Teste");
+        
+        marcasRepository.save(marcas);
+        
+        
+        Produtos p = new Produtos();
+        p.setDescricao(DEFAULT_DESCRICAO);
+        p.setCodigoEAN(DEFAULT_CODIGO_EAN);
+        p.setQtdeAtual(DEFAULT_QTDE_ATUAL);
+        p.setObservacoes(DEFAULT_OBSERVACOES);
+        
+        p.setMarcas(marcas);
+        
+        produtosRepository.save(p);
+        
+    	List<Produtos> listProdutos = produtosRepository.findByMarcas(marcas);
+    	
+    	
+    	listProdutos.size();
+
+    }
+    
 }
