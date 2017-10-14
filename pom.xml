@@ -1056,4 +1056,16 @@
             </dependencies>
         </profile>
     </profiles>
+    <url>http://rogrs.github.io/loja/</url>
+    <description>Projeto para pequenas lojas</description>
+    <scm>
+    	<url>http://rogrs.github.io/loja</url>
+    	<connection>scm:git:git://github.com/rogrs/loja.git</connection>
+    	<developerConnection>scm:git:git@github.com:rogrs/loja.git</developerConnection>
+    	<tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+    	<system>GitHub Issues</system>
+    	<url>https://github.com/rogrs/loja/issues</url>
+    </issueManagement>
 </project>
