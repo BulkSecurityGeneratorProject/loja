@@ -24,24 +24,21 @@ public class Marcas implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
-    @Size(max = 60)
-    @Column(name = "descricao", length = 60, nullable = false)
+    @Size(max = 30)
+    @Column(name = "descricao", length = 30, nullable = false)
     private String descricao;
-
-    @OneToMany(mappedBy = "marcas")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<GradeProdutos> gradeProdutos = new HashSet<>();
 
     @OneToMany(mappedBy = "marcas")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Produtos> produtos = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -54,25 +51,40 @@ public class Marcas implements Serializable {
         return descricao;
     }
 
+    public Marcas descricao(String descricao) {
+        this.descricao = descricao;
+        return this;
+    }
+
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public Set<GradeProdutos> getGradeProdutos() {
-        return gradeProdutos;
-    }
-
-    public void setGradeProdutos(Set<GradeProdutos> gradeProdutos) {
-        this.gradeProdutos = gradeProdutos;
     }
 
     public Set<Produtos> getProdutos() {
         return produtos;
     }
 
+    public Marcas produtos(Set<Produtos> produtos) {
+        this.produtos = produtos;
+        return this;
+    }
+
+    public Marcas addProdutos(Produtos produtos) {
+        this.produtos.add(produtos);
+        produtos.setMarcas(this);
+        return this;
+    }
+
+    public Marcas removeProdutos(Produtos produtos) {
+        this.produtos.remove(produtos);
+        produtos.setMarcas(null);
+        return this;
+    }
+
     public void setProdutos(Set<Produtos> produtos) {
         this.produtos = produtos;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -83,22 +95,22 @@ public class Marcas implements Serializable {
             return false;
         }
         Marcas marcas = (Marcas) o;
-        if(marcas.id == null || id == null) {
+        if (marcas.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, marcas.id);
+        return Objects.equals(getId(), marcas.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Marcas{" +
-            "id=" + id +
-            ", descricao='" + descricao + "'" +
-            '}';
+            "id=" + getId() +
+            ", descricao='" + getDescricao() + "'" +
+            "}";
     }
 }

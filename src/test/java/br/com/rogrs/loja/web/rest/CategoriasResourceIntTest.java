@@ -1,82 +1,94 @@
 package br.com.rogrs.loja.web.rest;
 
 import br.com.rogrs.loja.LojaApp;
+
 import br.com.rogrs.loja.domain.Categorias;
 import br.com.rogrs.loja.repository.CategoriasRepository;
 import br.com.rogrs.loja.repository.search.CategoriasSearchRepository;
+import br.com.rogrs.loja.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 /**
  * Test class for the CategoriasResource REST controller.
  *
  * @see CategoriasResource
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = LojaApp.class)
-@WebAppConfiguration
-@IntegrationTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = LojaApp.class)
 public class CategoriasResourceIntTest {
 
-    private static final String DEFAULT_DESCRICAO = "AAAAA";
-    private static final String UPDATED_DESCRICAO = "BBBBB";
+    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRICAO = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private CategoriasRepository categoriasRepository;
 
-    @Inject
+    @Autowired
     private CategoriasSearchRepository categoriasSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private EntityManager em;
 
     private MockMvc restCategoriasMockMvc;
 
     private Categorias categorias;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        CategoriasResource categoriasResource = new CategoriasResource();
-        ReflectionTestUtils.setField(categoriasResource, "categoriasSearchRepository", categoriasSearchRepository);
-        ReflectionTestUtils.setField(categoriasResource, "categoriasRepository", categoriasRepository);
+        final CategoriasResource categoriasResource = new CategoriasResource(categoriasRepository, categoriasSearchRepository);
         this.restCategoriasMockMvc = MockMvcBuilders.standaloneSetup(categoriasResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Categorias createEntity(EntityManager em) {
+        Categorias categorias = new Categorias()
+            .descricao(DEFAULT_DESCRICAO);
+        return categorias;
     }
 
     @Before
     public void initTest() {
         categoriasSearchRepository.deleteAll();
-        categorias = new Categorias();
-        categorias.setDescricao(DEFAULT_DESCRICAO);
+        categorias = createEntity(em);
     }
 
     @Test
@@ -85,21 +97,39 @@ public class CategoriasResourceIntTest {
         int databaseSizeBeforeCreate = categoriasRepository.findAll().size();
 
         // Create the Categorias
-
         restCategoriasMockMvc.perform(post("/api/categorias")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(categorias)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(categorias)))
+            .andExpect(status().isCreated());
 
         // Validate the Categorias in the database
-        List<Categorias> categorias = categoriasRepository.findAll();
-        assertThat(categorias).hasSize(databaseSizeBeforeCreate + 1);
-        Categorias testCategorias = categorias.get(categorias.size() - 1);
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeCreate + 1);
+        Categorias testCategorias = categoriasList.get(categoriasList.size() - 1);
         assertThat(testCategorias.getDescricao()).isEqualTo(DEFAULT_DESCRICAO);
 
-        // Validate the Categorias in ElasticSearch
+        // Validate the Categorias in Elasticsearch
         Categorias categoriasEs = categoriasSearchRepository.findOne(testCategorias.getId());
         assertThat(categoriasEs).isEqualToComparingFieldByField(testCategorias);
+    }
+
+    @Test
+    @Transactional
+    public void createCategoriasWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = categoriasRepository.findAll().size();
+
+        // Create the Categorias with an existing ID
+        categorias.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restCategoriasMockMvc.perform(post("/api/categorias")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(categorias)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Categorias in the database
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -112,12 +142,12 @@ public class CategoriasResourceIntTest {
         // Create the Categorias, which fails.
 
         restCategoriasMockMvc.perform(post("/api/categorias")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(categorias)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(categorias)))
+            .andExpect(status().isBadRequest());
 
-        List<Categorias> categorias = categoriasRepository.findAll();
-        assertThat(categorias).hasSize(databaseSizeBeforeTest);
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -126,12 +156,12 @@ public class CategoriasResourceIntTest {
         // Initialize the database
         categoriasRepository.saveAndFlush(categorias);
 
-        // Get all the categorias
+        // Get all the categoriasList
         restCategoriasMockMvc.perform(get("/api/categorias?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(categorias.getId().intValue())))
-                .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(categorias.getId().intValue())))
+            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
     }
 
     @Test
@@ -143,7 +173,7 @@ public class CategoriasResourceIntTest {
         // Get the categorias
         restCategoriasMockMvc.perform(get("/api/categorias/{id}", categorias.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(categorias.getId().intValue()))
             .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()));
     }
@@ -153,7 +183,7 @@ public class CategoriasResourceIntTest {
     public void getNonExistingCategorias() throws Exception {
         // Get the categorias
         restCategoriasMockMvc.perform(get("/api/categorias/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -165,24 +195,42 @@ public class CategoriasResourceIntTest {
         int databaseSizeBeforeUpdate = categoriasRepository.findAll().size();
 
         // Update the categorias
-        Categorias updatedCategorias = new Categorias();
-        updatedCategorias.setId(categorias.getId());
-        updatedCategorias.setDescricao(UPDATED_DESCRICAO);
+        Categorias updatedCategorias = categoriasRepository.findOne(categorias.getId());
+        updatedCategorias
+            .descricao(UPDATED_DESCRICAO);
 
         restCategoriasMockMvc.perform(put("/api/categorias")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedCategorias)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedCategorias)))
+            .andExpect(status().isOk());
 
         // Validate the Categorias in the database
-        List<Categorias> categorias = categoriasRepository.findAll();
-        assertThat(categorias).hasSize(databaseSizeBeforeUpdate);
-        Categorias testCategorias = categorias.get(categorias.size() - 1);
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeUpdate);
+        Categorias testCategorias = categoriasList.get(categoriasList.size() - 1);
         assertThat(testCategorias.getDescricao()).isEqualTo(UPDATED_DESCRICAO);
 
-        // Validate the Categorias in ElasticSearch
+        // Validate the Categorias in Elasticsearch
         Categorias categoriasEs = categoriasSearchRepository.findOne(testCategorias.getId());
         assertThat(categoriasEs).isEqualToComparingFieldByField(testCategorias);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingCategorias() throws Exception {
+        int databaseSizeBeforeUpdate = categoriasRepository.findAll().size();
+
+        // Create the Categorias
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restCategoriasMockMvc.perform(put("/api/categorias")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(categorias)))
+            .andExpect(status().isCreated());
+
+        // Validate the Categorias in the database
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -195,16 +243,16 @@ public class CategoriasResourceIntTest {
 
         // Get the categorias
         restCategoriasMockMvc.perform(delete("/api/categorias/{id}", categorias.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean categoriasExistsInEs = categoriasSearchRepository.exists(categorias.getId());
         assertThat(categoriasExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Categorias> categorias = categoriasRepository.findAll();
-        assertThat(categorias).hasSize(databaseSizeBeforeDelete - 1);
+        List<Categorias> categoriasList = categoriasRepository.findAll();
+        assertThat(categoriasList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -217,8 +265,23 @@ public class CategoriasResourceIntTest {
         // Search the categorias
         restCategoriasMockMvc.perform(get("/api/_search/categorias?query=id:" + categorias.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(categorias.getId().intValue())))
             .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Categorias.class);
+        Categorias categorias1 = new Categorias();
+        categorias1.setId(1L);
+        Categorias categorias2 = new Categorias();
+        categorias2.setId(categorias1.getId());
+        assertThat(categorias1).isEqualTo(categorias2);
+        categorias2.setId(2L);
+        assertThat(categorias1).isNotEqualTo(categorias2);
+        categorias1.setId(null);
+        assertThat(categorias1).isNotEqualTo(categorias2);
     }
 }

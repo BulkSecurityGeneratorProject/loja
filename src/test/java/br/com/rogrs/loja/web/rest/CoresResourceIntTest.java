@@ -1,82 +1,94 @@
 package br.com.rogrs.loja.web.rest;
 
 import br.com.rogrs.loja.LojaApp;
+
 import br.com.rogrs.loja.domain.Cores;
 import br.com.rogrs.loja.repository.CoresRepository;
 import br.com.rogrs.loja.repository.search.CoresSearchRepository;
+import br.com.rogrs.loja.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 /**
  * Test class for the CoresResource REST controller.
  *
  * @see CoresResource
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = LojaApp.class)
-@WebAppConfiguration
-@IntegrationTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = LojaApp.class)
 public class CoresResourceIntTest {
 
-    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_DESCRICAO = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRICAO = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private CoresRepository coresRepository;
 
-    @Inject
+    @Autowired
     private CoresSearchRepository coresSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private EntityManager em;
 
     private MockMvc restCoresMockMvc;
 
     private Cores cores;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        CoresResource coresResource = new CoresResource();
-        ReflectionTestUtils.setField(coresResource, "coresSearchRepository", coresSearchRepository);
-        ReflectionTestUtils.setField(coresResource, "coresRepository", coresRepository);
+        final CoresResource coresResource = new CoresResource(coresRepository, coresSearchRepository);
         this.restCoresMockMvc = MockMvcBuilders.standaloneSetup(coresResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Cores createEntity(EntityManager em) {
+        Cores cores = new Cores()
+            .descricao(DEFAULT_DESCRICAO);
+        return cores;
     }
 
     @Before
     public void initTest() {
         coresSearchRepository.deleteAll();
-        cores = new Cores();
-        cores.setDescricao(DEFAULT_DESCRICAO);
+        cores = createEntity(em);
     }
 
     @Test
@@ -85,21 +97,39 @@ public class CoresResourceIntTest {
         int databaseSizeBeforeCreate = coresRepository.findAll().size();
 
         // Create the Cores
-
         restCoresMockMvc.perform(post("/api/cores")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(cores)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cores)))
+            .andExpect(status().isCreated());
 
         // Validate the Cores in the database
-        List<Cores> cores = coresRepository.findAll();
-        assertThat(cores).hasSize(databaseSizeBeforeCreate + 1);
-        Cores testCores = cores.get(cores.size() - 1);
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeCreate + 1);
+        Cores testCores = coresList.get(coresList.size() - 1);
         assertThat(testCores.getDescricao()).isEqualTo(DEFAULT_DESCRICAO);
 
-        // Validate the Cores in ElasticSearch
+        // Validate the Cores in Elasticsearch
         Cores coresEs = coresSearchRepository.findOne(testCores.getId());
         assertThat(coresEs).isEqualToComparingFieldByField(testCores);
+    }
+
+    @Test
+    @Transactional
+    public void createCoresWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = coresRepository.findAll().size();
+
+        // Create the Cores with an existing ID
+        cores.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restCoresMockMvc.perform(post("/api/cores")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cores)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Cores in the database
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -112,12 +142,12 @@ public class CoresResourceIntTest {
         // Create the Cores, which fails.
 
         restCoresMockMvc.perform(post("/api/cores")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(cores)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cores)))
+            .andExpect(status().isBadRequest());
 
-        List<Cores> cores = coresRepository.findAll();
-        assertThat(cores).hasSize(databaseSizeBeforeTest);
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -126,12 +156,12 @@ public class CoresResourceIntTest {
         // Initialize the database
         coresRepository.saveAndFlush(cores);
 
-        // Get all the cores
+        // Get all the coresList
         restCoresMockMvc.perform(get("/api/cores?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(cores.getId().intValue())))
-                .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(cores.getId().intValue())))
+            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
     }
 
     @Test
@@ -143,7 +173,7 @@ public class CoresResourceIntTest {
         // Get the cores
         restCoresMockMvc.perform(get("/api/cores/{id}", cores.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(cores.getId().intValue()))
             .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()));
     }
@@ -153,7 +183,7 @@ public class CoresResourceIntTest {
     public void getNonExistingCores() throws Exception {
         // Get the cores
         restCoresMockMvc.perform(get("/api/cores/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -165,24 +195,42 @@ public class CoresResourceIntTest {
         int databaseSizeBeforeUpdate = coresRepository.findAll().size();
 
         // Update the cores
-        Cores updatedCores = new Cores();
-        updatedCores.setId(cores.getId());
-        updatedCores.setDescricao(UPDATED_DESCRICAO);
+        Cores updatedCores = coresRepository.findOne(cores.getId());
+        updatedCores
+            .descricao(UPDATED_DESCRICAO);
 
         restCoresMockMvc.perform(put("/api/cores")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedCores)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedCores)))
+            .andExpect(status().isOk());
 
         // Validate the Cores in the database
-        List<Cores> cores = coresRepository.findAll();
-        assertThat(cores).hasSize(databaseSizeBeforeUpdate);
-        Cores testCores = cores.get(cores.size() - 1);
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeUpdate);
+        Cores testCores = coresList.get(coresList.size() - 1);
         assertThat(testCores.getDescricao()).isEqualTo(UPDATED_DESCRICAO);
 
-        // Validate the Cores in ElasticSearch
+        // Validate the Cores in Elasticsearch
         Cores coresEs = coresSearchRepository.findOne(testCores.getId());
         assertThat(coresEs).isEqualToComparingFieldByField(testCores);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingCores() throws Exception {
+        int databaseSizeBeforeUpdate = coresRepository.findAll().size();
+
+        // Create the Cores
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restCoresMockMvc.perform(put("/api/cores")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cores)))
+            .andExpect(status().isCreated());
+
+        // Validate the Cores in the database
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -195,16 +243,16 @@ public class CoresResourceIntTest {
 
         // Get the cores
         restCoresMockMvc.perform(delete("/api/cores/{id}", cores.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean coresExistsInEs = coresSearchRepository.exists(cores.getId());
         assertThat(coresExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Cores> cores = coresRepository.findAll();
-        assertThat(cores).hasSize(databaseSizeBeforeDelete - 1);
+        List<Cores> coresList = coresRepository.findAll();
+        assertThat(coresList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -217,8 +265,23 @@ public class CoresResourceIntTest {
         // Search the cores
         restCoresMockMvc.perform(get("/api/_search/cores?query=id:" + cores.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(cores.getId().intValue())))
             .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Cores.class);
+        Cores cores1 = new Cores();
+        cores1.setId(1L);
+        Cores cores2 = new Cores();
+        cores2.setId(cores1.getId());
+        assertThat(cores1).isEqualTo(cores2);
+        cores2.setId(2L);
+        assertThat(cores1).isNotEqualTo(cores2);
+        cores1.setId(null);
+        assertThat(cores1).isNotEqualTo(cores2);
     }
 }

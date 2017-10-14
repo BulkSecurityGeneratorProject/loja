@@ -1,0 +1,85 @@
+<div>
+    <h2>
+        <span>Cadastros Localidades</span>
+        <button class="btn btn-primary float-right jh-create-entity create-cadastros-localidades" [routerLink]="['/', { outlets: { popup: ['cadastros-localidades-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down" >
+            Create new Cadastros Localidades
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="cadastrosLocalidades">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="numero"><span>Numero</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="complemento"><span>Complemento</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="referencias"><span>Referencias</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="cadastro.nome"><span>Cadastro</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="localidade.cep"><span>Localidade</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let cadastrosLocalidades of cadastrosLocalidades ;trackBy: trackId">
+                <td><a [routerLink]="['../cadastros-localidades', cadastrosLocalidades.id ]">{{cadastrosLocalidades.id}}</a></td>
+                <td>{{cadastrosLocalidades.numero}}</td>
+                <td>{{cadastrosLocalidades.complemento}}</td>
+                <td>{{cadastrosLocalidades.referencias}}</td>
+                <td>
+                    <div *ngIf="cadastrosLocalidades.cadastro">
+                        <a [routerLink]="['../cadastros', cadastrosLocalidades.cadastro?.id ]" >{{cadastrosLocalidades.cadastro?.nome}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="cadastrosLocalidades.localidade">
+                        <a [routerLink]="['../localidades', cadastrosLocalidades.localidade?.id ]" >{{cadastrosLocalidades.localidade?.cep}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../cadastros-localidades', cadastrosLocalidades.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'cadastros-localidades/'+ cadastrosLocalidades.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'cadastros-localidades/'+ cadastrosLocalidades.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

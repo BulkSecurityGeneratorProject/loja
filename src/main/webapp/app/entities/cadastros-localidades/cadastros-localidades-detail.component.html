@@ -1,0 +1,45 @@
+
+<div *ngIf="cadastrosLocalidades">
+    <h2><span>Cadastros Localidades</span> {{cadastrosLocalidades.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Numero</span></dt>
+        <dd>
+            <span>{{cadastrosLocalidades.numero}}</span>
+        </dd>
+        <dt><span>Complemento</span></dt>
+        <dd>
+            <span>{{cadastrosLocalidades.complemento}}</span>
+        </dd>
+        <dt><span>Referencias</span></dt>
+        <dd>
+            <span>{{cadastrosLocalidades.referencias}}</span>
+        </dd>
+        <dt><span>Cadastro</span></dt>
+        <dd>
+            <div *ngIf="cadastrosLocalidades.cadastro">
+                <a [routerLink]="['/cadastros', cadastrosLocalidades.cadastro?.id]">{{cadastrosLocalidades.cadastro?.nome}}</a>
+            </div>
+        </dd>
+        <dt><span>Localidade</span></dt>
+        <dd>
+            <div *ngIf="cadastrosLocalidades.localidade">
+                <a [routerLink]="['/localidades', cadastrosLocalidades.localidade?.id]">{{cadastrosLocalidades.localidade?.cep}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'cadastros-localidades/'+ cadastrosLocalidades.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

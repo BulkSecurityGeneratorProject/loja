@@ -24,7 +24,8 @@ public class Produtos implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
@@ -45,11 +46,6 @@ public class Produtos implements Serializable {
     @OneToMany(mappedBy = "produtos")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<GradeProdutos> gradeProdutos = new HashSet<>();
-
-    @OneToMany(mappedBy = "produtos")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Itens> itens = new HashSet<>();
 
     @ManyToOne
@@ -64,6 +60,7 @@ public class Produtos implements Serializable {
     @ManyToOne
     private Tamanhos tamanhos;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -76,12 +73,22 @@ public class Produtos implements Serializable {
         return descricao;
     }
 
+    public Produtos descricao(String descricao) {
+        this.descricao = descricao;
+        return this;
+    }
+
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
     public String getCodigoEAN() {
         return codigoEAN;
+    }
+
+    public Produtos codigoEAN(String codigoEAN) {
+        this.codigoEAN = codigoEAN;
+        return this;
     }
 
     public void setCodigoEAN(String codigoEAN) {
@@ -92,6 +99,11 @@ public class Produtos implements Serializable {
         return qtdeAtual;
     }
 
+    public Produtos qtdeAtual(Float qtdeAtual) {
+        this.qtdeAtual = qtdeAtual;
+        return this;
+    }
+
     public void setQtdeAtual(Float qtdeAtual) {
         this.qtdeAtual = qtdeAtual;
     }
@@ -100,20 +112,34 @@ public class Produtos implements Serializable {
         return observacoes;
     }
 
+    public Produtos observacoes(String observacoes) {
+        this.observacoes = observacoes;
+        return this;
+    }
+
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
     }
 
-    public Set<GradeProdutos> getGradeProdutos() {
-        return gradeProdutos;
-    }
-
-    public void setGradeProdutos(Set<GradeProdutos> gradeProdutos) {
-        this.gradeProdutos = gradeProdutos;
-    }
-
     public Set<Itens> getItens() {
         return itens;
+    }
+
+    public Produtos itens(Set<Itens> itens) {
+        this.itens = itens;
+        return this;
+    }
+
+    public Produtos addItens(Itens itens) {
+        this.itens.add(itens);
+        itens.setProdutos(this);
+        return this;
+    }
+
+    public Produtos removeItens(Itens itens) {
+        this.itens.remove(itens);
+        itens.setProdutos(null);
+        return this;
     }
 
     public void setItens(Set<Itens> itens) {
@@ -124,12 +150,22 @@ public class Produtos implements Serializable {
         return marcas;
     }
 
+    public Produtos marcas(Marcas marcas) {
+        this.marcas = marcas;
+        return this;
+    }
+
     public void setMarcas(Marcas marcas) {
         this.marcas = marcas;
     }
 
     public Categorias getCategorias() {
         return categorias;
+    }
+
+    public Produtos categorias(Categorias categorias) {
+        this.categorias = categorias;
+        return this;
     }
 
     public void setCategorias(Categorias categorias) {
@@ -140,6 +176,11 @@ public class Produtos implements Serializable {
         return cores;
     }
 
+    public Produtos cores(Cores cores) {
+        this.cores = cores;
+        return this;
+    }
+
     public void setCores(Cores cores) {
         this.cores = cores;
     }
@@ -148,9 +189,15 @@ public class Produtos implements Serializable {
         return tamanhos;
     }
 
+    public Produtos tamanhos(Tamanhos tamanhos) {
+        this.tamanhos = tamanhos;
+        return this;
+    }
+
     public void setTamanhos(Tamanhos tamanhos) {
         this.tamanhos = tamanhos;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -161,25 +208,25 @@ public class Produtos implements Serializable {
             return false;
         }
         Produtos produtos = (Produtos) o;
-        if(produtos.id == null || id == null) {
+        if (produtos.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, produtos.id);
+        return Objects.equals(getId(), produtos.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Produtos{" +
-            "id=" + id +
-            ", descricao='" + descricao + "'" +
-            ", codigoEAN='" + codigoEAN + "'" +
-            ", qtdeAtual='" + qtdeAtual + "'" +
-            ", observacoes='" + observacoes + "'" +
-            '}';
+            "id=" + getId() +
+            ", descricao='" + getDescricao() + "'" +
+            ", codigoEAN='" + getCodigoEAN() + "'" +
+            ", qtdeAtual='" + getQtdeAtual() + "'" +
+            ", observacoes='" + getObservacoes() + "'" +
+            "}";
     }
 }

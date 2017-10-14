@@ -1,0 +1,45 @@
+
+<div *ngIf="cadastros">
+    <h2><span>Cadastros</span> {{cadastros.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Nome</span></dt>
+        <dd>
+            <span>{{cadastros.nome}}</span>
+        </dd>
+        <dt><span>Tipo Pessoa</span></dt>
+        <dd>
+            <span>{{cadastros.tipoPessoa}}</span>
+        </dd>
+        <dt><span>Tipo Cadastro</span></dt>
+        <dd>
+            <span>{{cadastros.tipoCadastro}}</span>
+        </dd>
+        <dt><span>Cpfcnpj</span></dt>
+        <dd>
+            <span>{{cadastros.cpfcnpj}}</span>
+        </dd>
+        <dt><span>Email</span></dt>
+        <dd>
+            <span>{{cadastros.email}}</span>
+        </dd>
+        <dt><span>Observacoes</span></dt>
+        <dd>
+            <span>{{cadastros.observacoes}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'cadastros/'+ cadastros.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

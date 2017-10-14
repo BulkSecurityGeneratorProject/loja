@@ -1,83 +1,69 @@
 {
-  "relationships": [
-    {
-      "relationshipId": 1,
-      "relationshipName": "gradeProdutos",
-      "otherEntityName": "gradeProdutos",
-      "relationshipType": "one-to-many",
-      "otherEntityRelationshipName": "produtos"
-    },
-    {
-      "relationshipId": 2,
-      "relationshipName": "itens",
-      "otherEntityName": "itens",
-      "relationshipType": "one-to-many",
-      "otherEntityRelationshipName": "produtos"
-    },
-    {
-      "relationshipId": 3,
-      "relationshipName": "marcas",
-      "otherEntityName": "marcas",
-      "relationshipType": "many-to-one",
-      "otherEntityField": "descricao"
-    },
-    {
-      "relationshipId": 4,
-      "relationshipName": "categorias",
-      "otherEntityName": "categorias",
-      "relationshipType": "many-to-one",
-      "otherEntityField": "descricao"
-    },
-    {
-      "relationshipId": 5,
-      "relationshipName": "cores",
-      "otherEntityName": "cores",
-      "relationshipType": "many-to-one",
-      "otherEntityField": "descricao"
-    },
-    {
-      "relationshipId": 6,
-      "relationshipName": "tamanhos",
-      "otherEntityName": "tamanhos",
-      "relationshipType": "many-to-one",
-      "otherEntityField": "descricao"
-    }
-  ],
-  "fields": [
-    {
-      "fieldId": 1,
-      "fieldName": "descricao",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required"
-      ]
-    },
-    {
-      "fieldId": 2,
-      "fieldName": "codigoEAN",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 13
-    },
-    {
-      "fieldId": 3,
-      "fieldName": "qtdeAtual",
-      "fieldType": "Float"
-    },
-    {
-      "fieldId": 4,
-      "fieldName": "observacoes",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 500
-    }
-  ],
-  "changelogDate": "20160606195939",
-  "dto": "no",
-  "pagination": "infinite-scroll",
-  "service": "no"
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "itens",
+            "otherEntityName": "itens",
+            "otherEntityRelationshipName": "produtos"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "marcas",
+            "otherEntityName": "marcas",
+            "otherEntityField": "descricao"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "categorias",
+            "otherEntityName": "categorias",
+            "otherEntityField": "descricao"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "cores",
+            "otherEntityName": "cores",
+            "otherEntityField": "descricao"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "tamanhos",
+            "otherEntityName": "tamanhos",
+            "otherEntityField": "descricao"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "descricao",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "codigoEAN",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 13
+        },
+        {
+            "fieldName": "qtdeAtual",
+            "fieldType": "Float"
+        },
+        {
+            "fieldName": "observacoes",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 500
+        }
+    ],
+    "changelogDate": "20171014023101",
+    "entityTableName": "produtos",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
 }

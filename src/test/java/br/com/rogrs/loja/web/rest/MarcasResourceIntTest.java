@@ -1,82 +1,94 @@
 package br.com.rogrs.loja.web.rest;
 
 import br.com.rogrs.loja.LojaApp;
+
 import br.com.rogrs.loja.domain.Marcas;
 import br.com.rogrs.loja.repository.MarcasRepository;
 import br.com.rogrs.loja.repository.search.MarcasSearchRepository;
+import br.com.rogrs.loja.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 /**
  * Test class for the MarcasResource REST controller.
  *
  * @see MarcasResource
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = LojaApp.class)
-@WebAppConfiguration
-@IntegrationTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = LojaApp.class)
 public class MarcasResourceIntTest {
 
-    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_DESCRICAO = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRICAO = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private MarcasRepository marcasRepository;
 
-    @Inject
+    @Autowired
     private MarcasSearchRepository marcasSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private EntityManager em;
 
     private MockMvc restMarcasMockMvc;
 
     private Marcas marcas;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MarcasResource marcasResource = new MarcasResource();
-        ReflectionTestUtils.setField(marcasResource, "marcasSearchRepository", marcasSearchRepository);
-        ReflectionTestUtils.setField(marcasResource, "marcasRepository", marcasRepository);
+        final MarcasResource marcasResource = new MarcasResource(marcasRepository, marcasSearchRepository);
         this.restMarcasMockMvc = MockMvcBuilders.standaloneSetup(marcasResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Marcas createEntity(EntityManager em) {
+        Marcas marcas = new Marcas()
+            .descricao(DEFAULT_DESCRICAO);
+        return marcas;
     }
 
     @Before
     public void initTest() {
         marcasSearchRepository.deleteAll();
-        marcas = new Marcas();
-        marcas.setDescricao(DEFAULT_DESCRICAO);
+        marcas = createEntity(em);
     }
 
     @Test
@@ -85,21 +97,39 @@ public class MarcasResourceIntTest {
         int databaseSizeBeforeCreate = marcasRepository.findAll().size();
 
         // Create the Marcas
-
         restMarcasMockMvc.perform(post("/api/marcas")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(marcas)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(marcas)))
+            .andExpect(status().isCreated());
 
         // Validate the Marcas in the database
-        List<Marcas> marcas = marcasRepository.findAll();
-        assertThat(marcas).hasSize(databaseSizeBeforeCreate + 1);
-        Marcas testMarcas = marcas.get(marcas.size() - 1);
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeCreate + 1);
+        Marcas testMarcas = marcasList.get(marcasList.size() - 1);
         assertThat(testMarcas.getDescricao()).isEqualTo(DEFAULT_DESCRICAO);
 
-        // Validate the Marcas in ElasticSearch
+        // Validate the Marcas in Elasticsearch
         Marcas marcasEs = marcasSearchRepository.findOne(testMarcas.getId());
         assertThat(marcasEs).isEqualToComparingFieldByField(testMarcas);
+    }
+
+    @Test
+    @Transactional
+    public void createMarcasWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = marcasRepository.findAll().size();
+
+        // Create the Marcas with an existing ID
+        marcas.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restMarcasMockMvc.perform(post("/api/marcas")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(marcas)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Marcas in the database
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -112,12 +142,12 @@ public class MarcasResourceIntTest {
         // Create the Marcas, which fails.
 
         restMarcasMockMvc.perform(post("/api/marcas")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(marcas)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(marcas)))
+            .andExpect(status().isBadRequest());
 
-        List<Marcas> marcas = marcasRepository.findAll();
-        assertThat(marcas).hasSize(databaseSizeBeforeTest);
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -126,12 +156,12 @@ public class MarcasResourceIntTest {
         // Initialize the database
         marcasRepository.saveAndFlush(marcas);
 
-        // Get all the marcas
+        // Get all the marcasList
         restMarcasMockMvc.perform(get("/api/marcas?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(marcas.getId().intValue())))
-                .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(marcas.getId().intValue())))
+            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
     }
 
     @Test
@@ -143,7 +173,7 @@ public class MarcasResourceIntTest {
         // Get the marcas
         restMarcasMockMvc.perform(get("/api/marcas/{id}", marcas.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(marcas.getId().intValue()))
             .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()));
     }
@@ -153,7 +183,7 @@ public class MarcasResourceIntTest {
     public void getNonExistingMarcas() throws Exception {
         // Get the marcas
         restMarcasMockMvc.perform(get("/api/marcas/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -165,24 +195,42 @@ public class MarcasResourceIntTest {
         int databaseSizeBeforeUpdate = marcasRepository.findAll().size();
 
         // Update the marcas
-        Marcas updatedMarcas = new Marcas();
-        updatedMarcas.setId(marcas.getId());
-        updatedMarcas.setDescricao(UPDATED_DESCRICAO);
+        Marcas updatedMarcas = marcasRepository.findOne(marcas.getId());
+        updatedMarcas
+            .descricao(UPDATED_DESCRICAO);
 
         restMarcasMockMvc.perform(put("/api/marcas")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedMarcas)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedMarcas)))
+            .andExpect(status().isOk());
 
         // Validate the Marcas in the database
-        List<Marcas> marcas = marcasRepository.findAll();
-        assertThat(marcas).hasSize(databaseSizeBeforeUpdate);
-        Marcas testMarcas = marcas.get(marcas.size() - 1);
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeUpdate);
+        Marcas testMarcas = marcasList.get(marcasList.size() - 1);
         assertThat(testMarcas.getDescricao()).isEqualTo(UPDATED_DESCRICAO);
 
-        // Validate the Marcas in ElasticSearch
+        // Validate the Marcas in Elasticsearch
         Marcas marcasEs = marcasSearchRepository.findOne(testMarcas.getId());
         assertThat(marcasEs).isEqualToComparingFieldByField(testMarcas);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingMarcas() throws Exception {
+        int databaseSizeBeforeUpdate = marcasRepository.findAll().size();
+
+        // Create the Marcas
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restMarcasMockMvc.perform(put("/api/marcas")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(marcas)))
+            .andExpect(status().isCreated());
+
+        // Validate the Marcas in the database
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -195,16 +243,16 @@ public class MarcasResourceIntTest {
 
         // Get the marcas
         restMarcasMockMvc.perform(delete("/api/marcas/{id}", marcas.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean marcasExistsInEs = marcasSearchRepository.exists(marcas.getId());
         assertThat(marcasExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Marcas> marcas = marcasRepository.findAll();
-        assertThat(marcas).hasSize(databaseSizeBeforeDelete - 1);
+        List<Marcas> marcasList = marcasRepository.findAll();
+        assertThat(marcasList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -217,8 +265,23 @@ public class MarcasResourceIntTest {
         // Search the marcas
         restMarcasMockMvc.perform(get("/api/_search/marcas?query=id:" + marcas.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(marcas.getId().intValue())))
             .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Marcas.class);
+        Marcas marcas1 = new Marcas();
+        marcas1.setId(1L);
+        Marcas marcas2 = new Marcas();
+        marcas2.setId(marcas1.getId());
+        assertThat(marcas1).isEqualTo(marcas2);
+        marcas2.setId(2L);
+        assertThat(marcas1).isNotEqualTo(marcas2);
+        marcas1.setId(null);
+        assertThat(marcas1).isNotEqualTo(marcas2);
     }
 }

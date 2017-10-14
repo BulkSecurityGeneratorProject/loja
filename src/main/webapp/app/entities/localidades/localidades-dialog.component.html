@@ -1,0 +1,123 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myLocalidadesLabel">Create or edit a Localidades</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!localidades.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="localidades.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_cep">Cep</label>
+            <input type="text" class="form-control" name="cep" id="field_cep"
+                [(ngModel)]="localidades.cep" required maxlength="9" />
+            <div [hidden]="!(editForm.controls.cep?.dirty && editForm.controls.cep?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cep?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cep?.errors?.maxlength">
+                   This field cannot be longer than 9 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_endereco">Endereco</label>
+            <input type="text" class="form-control" name="endereco" id="field_endereco"
+                [(ngModel)]="localidades.endereco" required maxlength="60" />
+            <div [hidden]="!(editForm.controls.endereco?.dirty && editForm.controls.endereco?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.endereco?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.endereco?.errors?.maxlength">
+                   This field cannot be longer than 60 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_bairro">Bairro</label>
+            <input type="text" class="form-control" name="bairro" id="field_bairro"
+                [(ngModel)]="localidades.bairro" required maxlength="60" />
+            <div [hidden]="!(editForm.controls.bairro?.dirty && editForm.controls.bairro?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.bairro?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.bairro?.errors?.maxlength">
+                   This field cannot be longer than 60 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_cidade">Cidade</label>
+            <input type="text" class="form-control" name="cidade" id="field_cidade"
+                [(ngModel)]="localidades.cidade" required maxlength="60" />
+            <div [hidden]="!(editForm.controls.cidade?.dirty && editForm.controls.cidade?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cidade?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cidade?.errors?.maxlength">
+                   This field cannot be longer than 60 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_uF">U F</label>
+            <select class="form-control" name="uF" [(ngModel)]="localidades.uF" id="field_uF"  required>
+                <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AM">AM</option>
+                <option value="AP">AP</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MG">MG</option>
+                <option value="MS">MS</option>
+                <option value="MT">MT</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="PR">PR</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="RS">RS</option>
+                <option value="SC">SC</option>
+                <option value="SE">SE</option>
+                <option value="SP">SP</option>
+                <option value="TO">TO</option>
+            </select>
+            <div [hidden]="!(editForm.controls.uF?.dirty && editForm.controls.uF?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.uF?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

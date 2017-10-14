@@ -11,31 +11,58 @@ enum Estados {
     AC, AL, AM, AP, BA, CE, DF, ES, GO, MA, MG, MS, MT, PA, PB, PE, PI, PR, RJ, RN, RO, RR, RS, SC, SE, SP, TO
 }
 
+enum TipoPedido {
+    VENDA, COMPRA, PEDIDO_COMPRA, PEDIDO_VENDA, DEVOLUCAO
+}
+
+
+entity Localidades {
+    cep String required maxlength(9),
+	endereco String required maxlength(60),
+    bairro String required maxlength(60),
+	cidade String required maxlength(60),
+	UF Estados required
+}
 
 
 entity Cadastros {
-	nome String required,
+	    nome String required maxlength(100),
         tipoPessoa TipoPessoa required,
         tipoCadastro TipoCadastro required,
+        cpf_cnpj String maxlength(14),
         email String maxlength(100),
         observacoes String maxlength(500),
         
 }
 
+entity CadastrosLocalidades {
+      numero String required maxlength(20),
+      complemento String required maxlength(30),
+      referencias String maxlength(80)
+}
+
+relationship OneToMany {
+  Cadastros{cadastrosLocalidades} to CadastrosLocalidades{cadastro(nome)}
+}
+
+relationship OneToMany {
+  Localidades{cadastrosLocalidades} to CadastrosLocalidades{localidade(cep)}
+}
+
 entity Categorias {
-	descricao String required  
+	descricao String required  maxlength(30)
 }
 
 entity Marcas {
-	descricao String required maxlength(60)
+	descricao String required maxlength(30)
 }
 
 entity Tamanhos {
-	descricao String required maxlength(60)
+	descricao String required maxlength(30)
 }
 
 entity Cores {
-	descricao String required maxlength(60)
+	descricao String required maxlength(30)
 }
 
 entity Produtos {
@@ -45,42 +72,6 @@ entity Produtos {
         observacoes String maxlength(500)
 }
 
-entity GradeProdutos {
-
-}
-
-relationship OneToMany {
-  Marcas{gradeProdutos} to GradeProdutos{marcas(descricao)}
-}
-
-relationship OneToMany {
-  Categorias{gradeProdutos} to GradeProdutos{categorias(descricao)}
-}
-
-relationship OneToMany {
-  Cores{gradeProdutos} to GradeProdutos{cores(descricao)}
-}
-
-relationship OneToMany {
-  Tamanhos{gradeProdutos} to GradeProdutos{tamanhos(descricao)}
-}
-
-relationship OneToMany {
-  Produtos{gradeProdutos} to GradeProdutos{produtos(descricao)}
-}
-
-
-entity Localidades {
-	endereco String required maxlength(60),
-	cep String required maxlength(9),
-        bairro String required maxlength(60),
-	cidade String required maxlength(60),
-	UF Estados
-}
-
-enum TipoPedido {
-    VENDA, COMPRA, PEDIDO_COMPRA, PEDIDO_VENDA, DEVOLUCAO
-}
 
 entity Pedidos {
 	dataPedido LocalDate required,
@@ -94,37 +85,6 @@ entity Itens {
         valorDesconto BigDecimal   
 }
 
-
-entity Transacoes {
-    Transacao_ID String required maxlength(50),	
-    Cliente_Nome String required maxlength(50),	
-    Cliente_Email String required maxlength(50),	
-    Debito_Credito String required maxlength(50),	
-    Tipo_Transacao	
-    Status	
-    Tipo_Pagamento	
-    Valor_Bruto	
-    Valor_Desconto	
-    Valor_Taxa	
-    Valor_Liquido	
-    Transportadora	
-    Num_Envio	
-    Data_Transacao	
-    Data_Compensacao	
-    Ref_Transacao	
-    Parcelas	
-    Codigo_Usuario	
-    Codigo_Venda	
-    Serial_Leitor	
-    Recebimentos	
-    Recebidos	
-    Valor_Recebido	
-    Valor_Tarifa_Intermediacao	
-    Valor_Taxa_Intermediacao	
-    Valor_Taxa_Parcelamento	
-    Valor_Tarifa_Boleto
-
-}
 
 relationship OneToMany {
   Marcas{produtos} to Produtos{marcas(descricao)}
@@ -153,6 +113,7 @@ relationship OneToMany {
 relationship OneToMany {
   Produtos{itens} to Itens{produtos(descricao)}
 }
+
 
 
 

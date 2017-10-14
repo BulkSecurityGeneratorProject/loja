@@ -2,24 +2,26 @@ package br.com.rogrs.loja.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import br.com.rogrs.loja.domain.Produtos;
+
 import br.com.rogrs.loja.repository.ProdutosRepository;
 import br.com.rogrs.loja.repository.search.ProdutosSearchRepository;
 import br.com.rogrs.loja.web.rest.util.HeaderUtil;
 import br.com.rogrs.loja.web.rest.util.PaginationUtil;
+import io.swagger.annotations.ApiParam;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,13 +37,18 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class ProdutosResource {
 
     private final Logger log = LoggerFactory.getLogger(ProdutosResource.class);
-        
-    @Inject
-    private ProdutosRepository produtosRepository;
-    
-    @Inject
-    private ProdutosSearchRepository produtosSearchRepository;
-    
+
+    private static final String ENTITY_NAME = "produtos";
+
+    private final ProdutosRepository produtosRepository;
+
+    private final ProdutosSearchRepository produtosSearchRepository;
+
+    public ProdutosResource(ProdutosRepository produtosRepository, ProdutosSearchRepository produtosSearchRepository) {
+        this.produtosRepository = produtosRepository;
+        this.produtosSearchRepository = produtosSearchRepository;
+    }
+
     /**
      * POST  /produtos : Create a new produtos.
      *
@@ -49,19 +56,17 @@ public class ProdutosResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new produtos, or with status 400 (Bad Request) if the produtos has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @RequestMapping(value = "/produtos",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/produtos")
     @Timed
     public ResponseEntity<Produtos> createProdutos(@Valid @RequestBody Produtos produtos) throws URISyntaxException {
         log.debug("REST request to save Produtos : {}", produtos);
         if (produtos.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("produtos", "idexists", "A new produtos cannot already have an ID")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new produtos cannot already have an ID")).body(null);
         }
         Produtos result = produtosRepository.save(produtos);
         produtosSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/produtos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("produtos", result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -71,12 +76,10 @@ public class ProdutosResource {
      * @param produtos the produtos to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated produtos,
      * or with status 400 (Bad Request) if the produtos is not valid,
-     * or with status 500 (Internal Server Error) if the produtos couldnt be updated
+     * or with status 500 (Internal Server Error) if the produtos couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @RequestMapping(value = "/produtos",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/produtos")
     @Timed
     public ResponseEntity<Produtos> updateProdutos(@Valid @RequestBody Produtos produtos) throws URISyntaxException {
         log.debug("REST request to update Produtos : {}", produtos);
@@ -86,7 +89,7 @@ public class ProdutosResource {
         Produtos result = produtosRepository.save(produtos);
         produtosSearchRepository.save(result);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("produtos", produtos.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, produtos.getId().toString()))
             .body(result);
     }
 
@@ -95,16 +98,12 @@ public class ProdutosResource {
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of produtos in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @RequestMapping(value = "/produtos",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/produtos")
     @Timed
-    public ResponseEntity<List<Produtos>> getAllProdutos(Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Produtos>> getAllProdutos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Produtos");
-        Page<Produtos> page = produtosRepository.findAll(pageable); 
+        Page<Produtos> page = produtosRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/produtos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -115,18 +114,12 @@ public class ProdutosResource {
      * @param id the id of the produtos to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the produtos, or with status 404 (Not Found)
      */
-    @RequestMapping(value = "/produtos/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/produtos/{id}")
     @Timed
     public ResponseEntity<Produtos> getProdutos(@PathVariable Long id) {
         log.debug("REST request to get Produtos : {}", id);
         Produtos produtos = produtosRepository.findOne(id);
-        return Optional.ofNullable(produtos)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(produtos));
     }
 
     /**
@@ -135,15 +128,13 @@ public class ProdutosResource {
      * @param id the id of the produtos to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @RequestMapping(value = "/produtos/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/produtos/{id}")
     @Timed
     public ResponseEntity<Void> deleteProdutos(@PathVariable Long id) {
         log.debug("REST request to delete Produtos : {}", id);
         produtosRepository.delete(id);
         produtosSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("produtos", id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
     /**
@@ -151,14 +142,12 @@ public class ProdutosResource {
      * to the query.
      *
      * @param query the query of the produtos search
+     * @param pageable the pagination information
      * @return the result of the search
      */
-    @RequestMapping(value = "/_search/produtos",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/_search/produtos")
     @Timed
-    public ResponseEntity<List<Produtos>> searchProdutos(@RequestParam String query, Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Produtos>> searchProdutos(@RequestParam String query, @ApiParam Pageable pageable) {
         log.debug("REST request to search for a page of Produtos for query {}", query);
         Page<Produtos> page = produtosSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/produtos");

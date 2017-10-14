@@ -22,7 +22,8 @@ public class Itens implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
@@ -42,6 +43,7 @@ public class Itens implements Serializable {
     @ManyToOne
     private Produtos produtos;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -54,12 +56,22 @@ public class Itens implements Serializable {
         return qtde;
     }
 
+    public Itens qtde(Float qtde) {
+        this.qtde = qtde;
+        return this;
+    }
+
     public void setQtde(Float qtde) {
         this.qtde = qtde;
     }
 
     public BigDecimal getValor() {
         return valor;
+    }
+
+    public Itens valor(BigDecimal valor) {
+        this.valor = valor;
+        return this;
     }
 
     public void setValor(BigDecimal valor) {
@@ -70,12 +82,22 @@ public class Itens implements Serializable {
         return valorDesconto;
     }
 
+    public Itens valorDesconto(BigDecimal valorDesconto) {
+        this.valorDesconto = valorDesconto;
+        return this;
+    }
+
     public void setValorDesconto(BigDecimal valorDesconto) {
         this.valorDesconto = valorDesconto;
     }
 
     public Pedidos getPedidos() {
         return pedidos;
+    }
+
+    public Itens pedidos(Pedidos pedidos) {
+        this.pedidos = pedidos;
+        return this;
     }
 
     public void setPedidos(Pedidos pedidos) {
@@ -86,9 +108,15 @@ public class Itens implements Serializable {
         return produtos;
     }
 
+    public Itens produtos(Produtos produtos) {
+        this.produtos = produtos;
+        return this;
+    }
+
     public void setProdutos(Produtos produtos) {
         this.produtos = produtos;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -99,24 +127,24 @@ public class Itens implements Serializable {
             return false;
         }
         Itens itens = (Itens) o;
-        if(itens.id == null || id == null) {
+        if (itens.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, itens.id);
+        return Objects.equals(getId(), itens.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Itens{" +
-            "id=" + id +
-            ", qtde='" + qtde + "'" +
-            ", valor='" + valor + "'" +
-            ", valorDesconto='" + valorDesconto + "'" +
-            '}';
+            "id=" + getId() +
+            ", qtde='" + getQtde() + "'" +
+            ", valor='" + getValor() + "'" +
+            ", valorDesconto='" + getValorDesconto() + "'" +
+            "}";
     }
 }

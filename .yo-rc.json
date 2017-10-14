@@ -1,32 +1,35 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.4.0",
+    "promptValues": {
+      "packageName": "br.com.rogrs.loja"
+    },
+    "jhipsterVersion": "4.9.0",
     "baseName": "loja",
     "packageName": "br.com.rogrs.loja",
     "packageFolder": "br/com/rogrs/loja",
     "serverPort": "8080",
-    "authenticationType": "session",
+    "authenticationType": "jwt",
     "hibernateCache": "ehcache",
-    "clusteredHttpSession": "no",
-    "websocket": "no",
+    "clusteredHttpSession": false,
+    "websocket": false,
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
-    "prodDatabaseType": "mysql",
+    "prodDatabaseType": "postgresql",
     "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSocialSignIn": false,
-    "rememberMeKey": "a1f2693dd0fff4a05d31764211ba1d17ca547fbb",
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "9509739d3dd7cd51e2c408acbd710f25baa85785",
+    "clientFramework": "angularX",
     "useSass": false,
+    "clientPackageManager": "yarn",
     "applicationType": "monolith",
     "testFrameworks": [
       "gatling"
     ],
     "jhiPrefix": "jhi",
-    "enableTranslation": true,
-    "nativeLanguage": "pt-br",
-    "languages": [
-      "pt-br",
-      "pt-pt"
-    ]
+    "enableTranslation": false
   }
 }

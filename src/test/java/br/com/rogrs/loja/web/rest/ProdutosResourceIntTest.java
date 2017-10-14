@@ -1,104 +1,106 @@
 package br.com.rogrs.loja.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import br.com.rogrs.loja.LojaApp;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import br.com.rogrs.loja.domain.Produtos;
+import br.com.rogrs.loja.repository.ProdutosRepository;
+import br.com.rogrs.loja.repository.search.ProdutosSearchRepository;
+import br.com.rogrs.loja.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.rogrs.loja.LojaApp;
-import br.com.rogrs.loja.domain.Marcas;
-import br.com.rogrs.loja.domain.Produtos;
-import br.com.rogrs.loja.repository.MarcasRepository;
-import br.com.rogrs.loja.repository.ProdutosRepository;
-import br.com.rogrs.loja.repository.search.ProdutosSearchRepository;
+import javax.persistence.EntityManager;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ProdutosResource REST controller.
  *
  * @see ProdutosResource
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = LojaApp.class)
-@WebAppConfiguration
-@IntegrationTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = LojaApp.class)
 public class ProdutosResourceIntTest {
 
-    private static final String DEFAULT_DESCRICAO = "AAAAA";
-    private static final String UPDATED_DESCRICAO = "BBBBB";
-    private static final String DEFAULT_CODIGO_EAN = "AAAAAAAAAAAAA";
-    private static final String UPDATED_CODIGO_EAN = "BBBBBBBBBBBBB";
+    private static final String DEFAULT_DESCRICAO = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRICAO = "BBBBBBBBBB";
+
+    private static final String DEFAULT_CODIGO_EAN = "AAAAAAAAAA";
+    private static final String UPDATED_CODIGO_EAN = "BBBBBBBBBB";
 
     private static final Float DEFAULT_QTDE_ATUAL = 1F;
     private static final Float UPDATED_QTDE_ATUAL = 2F;
-    private static final String DEFAULT_OBSERVACOES = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    private static final String UPDATED_OBSERVACOES = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-    @Inject
+    private static final String DEFAULT_OBSERVACOES = "AAAAAAAAAA";
+    private static final String UPDATED_OBSERVACOES = "BBBBBBBBBB";
+
+    @Autowired
     private ProdutosRepository produtosRepository;
 
-    @Inject
-    private MarcasRepository marcasRepository;
-    
-    
-    @Inject
+    @Autowired
     private ProdutosSearchRepository produtosSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private EntityManager em;
 
     private MockMvc restProdutosMockMvc;
 
     private Produtos produtos;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProdutosResource produtosResource = new ProdutosResource();
-        ReflectionTestUtils.setField(produtosResource, "produtosSearchRepository", produtosSearchRepository);
-        ReflectionTestUtils.setField(produtosResource, "produtosRepository", produtosRepository);
+        final ProdutosResource produtosResource = new ProdutosResource(produtosRepository, produtosSearchRepository);
         this.restProdutosMockMvc = MockMvcBuilders.standaloneSetup(produtosResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+    }
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Produtos createEntity(EntityManager em) {
+        Produtos produtos = new Produtos()
+            .descricao(DEFAULT_DESCRICAO)
+            .codigoEAN(DEFAULT_CODIGO_EAN)
+            .qtdeAtual(DEFAULT_QTDE_ATUAL)
+            .observacoes(DEFAULT_OBSERVACOES);
+        return produtos;
     }
 
     @Before
     public void initTest() {
         produtosSearchRepository.deleteAll();
-        produtos = new Produtos();
-        produtos.setDescricao(DEFAULT_DESCRICAO);
-        produtos.setCodigoEAN(DEFAULT_CODIGO_EAN);
-        produtos.setQtdeAtual(DEFAULT_QTDE_ATUAL);
-        produtos.setObservacoes(DEFAULT_OBSERVACOES);
+        produtos = createEntity(em);
     }
 
     @Test
@@ -107,24 +109,42 @@ public class ProdutosResourceIntTest {
         int databaseSizeBeforeCreate = produtosRepository.findAll().size();
 
         // Create the Produtos
-
         restProdutosMockMvc.perform(post("/api/produtos")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(produtos)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(produtos)))
+            .andExpect(status().isCreated());
 
         // Validate the Produtos in the database
-        List<Produtos> produtos = produtosRepository.findAll();
-        assertThat(produtos).hasSize(databaseSizeBeforeCreate + 1);
-        Produtos testProdutos = produtos.get(produtos.size() - 1);
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeCreate + 1);
+        Produtos testProdutos = produtosList.get(produtosList.size() - 1);
         assertThat(testProdutos.getDescricao()).isEqualTo(DEFAULT_DESCRICAO);
         assertThat(testProdutos.getCodigoEAN()).isEqualTo(DEFAULT_CODIGO_EAN);
         assertThat(testProdutos.getQtdeAtual()).isEqualTo(DEFAULT_QTDE_ATUAL);
         assertThat(testProdutos.getObservacoes()).isEqualTo(DEFAULT_OBSERVACOES);
 
-        // Validate the Produtos in ElasticSearch
+        // Validate the Produtos in Elasticsearch
         Produtos produtosEs = produtosSearchRepository.findOne(testProdutos.getId());
         assertThat(produtosEs).isEqualToComparingFieldByField(testProdutos);
+    }
+
+    @Test
+    @Transactional
+    public void createProdutosWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = produtosRepository.findAll().size();
+
+        // Create the Produtos with an existing ID
+        produtos.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restProdutosMockMvc.perform(post("/api/produtos")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(produtos)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Produtos in the database
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -137,12 +157,12 @@ public class ProdutosResourceIntTest {
         // Create the Produtos, which fails.
 
         restProdutosMockMvc.perform(post("/api/produtos")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(produtos)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(produtos)))
+            .andExpect(status().isBadRequest());
 
-        List<Produtos> produtos = produtosRepository.findAll();
-        assertThat(produtos).hasSize(databaseSizeBeforeTest);
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -151,15 +171,15 @@ public class ProdutosResourceIntTest {
         // Initialize the database
         produtosRepository.saveAndFlush(produtos);
 
-        // Get all the produtos
+        // Get all the produtosList
         restProdutosMockMvc.perform(get("/api/produtos?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(produtos.getId().intValue())))
-                .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())))
-                .andExpect(jsonPath("$.[*].codigoEAN").value(hasItem(DEFAULT_CODIGO_EAN.toString())))
-                .andExpect(jsonPath("$.[*].qtdeAtual").value(hasItem(DEFAULT_QTDE_ATUAL.doubleValue())))
-                .andExpect(jsonPath("$.[*].observacoes").value(hasItem(DEFAULT_OBSERVACOES.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(produtos.getId().intValue())))
+            .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())))
+            .andExpect(jsonPath("$.[*].codigoEAN").value(hasItem(DEFAULT_CODIGO_EAN.toString())))
+            .andExpect(jsonPath("$.[*].qtdeAtual").value(hasItem(DEFAULT_QTDE_ATUAL.doubleValue())))
+            .andExpect(jsonPath("$.[*].observacoes").value(hasItem(DEFAULT_OBSERVACOES.toString())));
     }
 
     @Test
@@ -171,7 +191,7 @@ public class ProdutosResourceIntTest {
         // Get the produtos
         restProdutosMockMvc.perform(get("/api/produtos/{id}", produtos.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(produtos.getId().intValue()))
             .andExpect(jsonPath("$.descricao").value(DEFAULT_DESCRICAO.toString()))
             .andExpect(jsonPath("$.codigoEAN").value(DEFAULT_CODIGO_EAN.toString()))
@@ -184,7 +204,7 @@ public class ProdutosResourceIntTest {
     public void getNonExistingProdutos() throws Exception {
         // Get the produtos
         restProdutosMockMvc.perform(get("/api/produtos/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -196,30 +216,48 @@ public class ProdutosResourceIntTest {
         int databaseSizeBeforeUpdate = produtosRepository.findAll().size();
 
         // Update the produtos
-        Produtos updatedProdutos = new Produtos();
-        updatedProdutos.setId(produtos.getId());
-        updatedProdutos.setDescricao(UPDATED_DESCRICAO);
-        updatedProdutos.setCodigoEAN(UPDATED_CODIGO_EAN);
-        updatedProdutos.setQtdeAtual(UPDATED_QTDE_ATUAL);
-        updatedProdutos.setObservacoes(UPDATED_OBSERVACOES);
+        Produtos updatedProdutos = produtosRepository.findOne(produtos.getId());
+        updatedProdutos
+            .descricao(UPDATED_DESCRICAO)
+            .codigoEAN(UPDATED_CODIGO_EAN)
+            .qtdeAtual(UPDATED_QTDE_ATUAL)
+            .observacoes(UPDATED_OBSERVACOES);
 
         restProdutosMockMvc.perform(put("/api/produtos")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedProdutos)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedProdutos)))
+            .andExpect(status().isOk());
 
         // Validate the Produtos in the database
-        List<Produtos> produtos = produtosRepository.findAll();
-        assertThat(produtos).hasSize(databaseSizeBeforeUpdate);
-        Produtos testProdutos = produtos.get(produtos.size() - 1);
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeUpdate);
+        Produtos testProdutos = produtosList.get(produtosList.size() - 1);
         assertThat(testProdutos.getDescricao()).isEqualTo(UPDATED_DESCRICAO);
         assertThat(testProdutos.getCodigoEAN()).isEqualTo(UPDATED_CODIGO_EAN);
         assertThat(testProdutos.getQtdeAtual()).isEqualTo(UPDATED_QTDE_ATUAL);
         assertThat(testProdutos.getObservacoes()).isEqualTo(UPDATED_OBSERVACOES);
 
-        // Validate the Produtos in ElasticSearch
+        // Validate the Produtos in Elasticsearch
         Produtos produtosEs = produtosSearchRepository.findOne(testProdutos.getId());
         assertThat(produtosEs).isEqualToComparingFieldByField(testProdutos);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingProdutos() throws Exception {
+        int databaseSizeBeforeUpdate = produtosRepository.findAll().size();
+
+        // Create the Produtos
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restProdutosMockMvc.perform(put("/api/produtos")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(produtos)))
+            .andExpect(status().isCreated());
+
+        // Validate the Produtos in the database
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -232,16 +270,16 @@ public class ProdutosResourceIntTest {
 
         // Get the produtos
         restProdutosMockMvc.perform(delete("/api/produtos/{id}", produtos.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean produtosExistsInEs = produtosSearchRepository.exists(produtos.getId());
         assertThat(produtosExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Produtos> produtos = produtosRepository.findAll();
-        assertThat(produtos).hasSize(databaseSizeBeforeDelete - 1);
+        List<Produtos> produtosList = produtosRepository.findAll();
+        assertThat(produtosList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -254,38 +292,26 @@ public class ProdutosResourceIntTest {
         // Search the produtos
         restProdutosMockMvc.perform(get("/api/_search/produtos?query=id:" + produtos.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(produtos.getId().intValue())))
             .andExpect(jsonPath("$.[*].descricao").value(hasItem(DEFAULT_DESCRICAO.toString())))
             .andExpect(jsonPath("$.[*].codigoEAN").value(hasItem(DEFAULT_CODIGO_EAN.toString())))
             .andExpect(jsonPath("$.[*].qtdeAtual").value(hasItem(DEFAULT_QTDE_ATUAL.doubleValue())))
             .andExpect(jsonPath("$.[*].observacoes").value(hasItem(DEFAULT_OBSERVACOES.toString())));
     }
-    
+
     @Test
     @Transactional
-    public void Produtos() throws Exception {
-        Marcas marcas = new Marcas();
-        marcas.setDescricao("Teste");
-        
-        marcasRepository.save(marcas);
-        
-        
-        Produtos p = new Produtos();
-        p.setDescricao(DEFAULT_DESCRICAO);
-        p.setCodigoEAN(DEFAULT_CODIGO_EAN);
-        p.setQtdeAtual(DEFAULT_QTDE_ATUAL);
-        p.setObservacoes(DEFAULT_OBSERVACOES);
-        
-        p.setMarcas(marcas);
-        
-        produtosRepository.save(p);
-        
-    	List<Produtos> listProdutos = produtosRepository.findByMarcas(marcas);
-    	
-    	
-    	listProdutos.size();
-
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Produtos.class);
+        Produtos produtos1 = new Produtos();
+        produtos1.setId(1L);
+        Produtos produtos2 = new Produtos();
+        produtos2.setId(produtos1.getId());
+        assertThat(produtos1).isEqualTo(produtos2);
+        produtos2.setId(2L);
+        assertThat(produtos1).isNotEqualTo(produtos2);
+        produtos1.setId(null);
+        assertThat(produtos1).isNotEqualTo(produtos2);
     }
-    
 }

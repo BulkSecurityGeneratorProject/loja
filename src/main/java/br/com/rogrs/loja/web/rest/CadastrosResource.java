@@ -2,24 +2,26 @@ package br.com.rogrs.loja.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import br.com.rogrs.loja.domain.Cadastros;
+
 import br.com.rogrs.loja.repository.CadastrosRepository;
 import br.com.rogrs.loja.repository.search.CadastrosSearchRepository;
 import br.com.rogrs.loja.web.rest.util.HeaderUtil;
 import br.com.rogrs.loja.web.rest.util.PaginationUtil;
+import io.swagger.annotations.ApiParam;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,13 +37,18 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class CadastrosResource {
 
     private final Logger log = LoggerFactory.getLogger(CadastrosResource.class);
-        
-    @Inject
-    private CadastrosRepository cadastrosRepository;
-    
-    @Inject
-    private CadastrosSearchRepository cadastrosSearchRepository;
-    
+
+    private static final String ENTITY_NAME = "cadastros";
+
+    private final CadastrosRepository cadastrosRepository;
+
+    private final CadastrosSearchRepository cadastrosSearchRepository;
+
+    public CadastrosResource(CadastrosRepository cadastrosRepository, CadastrosSearchRepository cadastrosSearchRepository) {
+        this.cadastrosRepository = cadastrosRepository;
+        this.cadastrosSearchRepository = cadastrosSearchRepository;
+    }
+
     /**
      * POST  /cadastros : Create a new cadastros.
      *
@@ -49,19 +56,17 @@ public class CadastrosResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new cadastros, or with status 400 (Bad Request) if the cadastros has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @RequestMapping(value = "/cadastros",
-        method = RequestMethod.POST,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping("/cadastros")
     @Timed
     public ResponseEntity<Cadastros> createCadastros(@Valid @RequestBody Cadastros cadastros) throws URISyntaxException {
         log.debug("REST request to save Cadastros : {}", cadastros);
         if (cadastros.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("cadastros", "idexists", "A new cadastros cannot already have an ID")).body(null);
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new cadastros cannot already have an ID")).body(null);
         }
         Cadastros result = cadastrosRepository.save(cadastros);
         cadastrosSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/cadastros/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("cadastros", result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
@@ -71,12 +76,10 @@ public class CadastrosResource {
      * @param cadastros the cadastros to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated cadastros,
      * or with status 400 (Bad Request) if the cadastros is not valid,
-     * or with status 500 (Internal Server Error) if the cadastros couldnt be updated
+     * or with status 500 (Internal Server Error) if the cadastros couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @RequestMapping(value = "/cadastros",
-        method = RequestMethod.PUT,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/cadastros")
     @Timed
     public ResponseEntity<Cadastros> updateCadastros(@Valid @RequestBody Cadastros cadastros) throws URISyntaxException {
         log.debug("REST request to update Cadastros : {}", cadastros);
@@ -86,7 +89,7 @@ public class CadastrosResource {
         Cadastros result = cadastrosRepository.save(cadastros);
         cadastrosSearchRepository.save(result);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("cadastros", cadastros.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, cadastros.getId().toString()))
             .body(result);
     }
 
@@ -95,16 +98,12 @@ public class CadastrosResource {
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of cadastros in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
-    @RequestMapping(value = "/cadastros",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/cadastros")
     @Timed
-    public ResponseEntity<List<Cadastros>> getAllCadastros(Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Cadastros>> getAllCadastros(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Cadastros");
-        Page<Cadastros> page = cadastrosRepository.findAll(pageable); 
+        Page<Cadastros> page = cadastrosRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/cadastros");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -115,18 +114,12 @@ public class CadastrosResource {
      * @param id the id of the cadastros to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the cadastros, or with status 404 (Not Found)
      */
-    @RequestMapping(value = "/cadastros/{id}",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/cadastros/{id}")
     @Timed
     public ResponseEntity<Cadastros> getCadastros(@PathVariable Long id) {
         log.debug("REST request to get Cadastros : {}", id);
         Cadastros cadastros = cadastrosRepository.findOne(id);
-        return Optional.ofNullable(cadastros)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(cadastros));
     }
 
     /**
@@ -135,15 +128,13 @@ public class CadastrosResource {
      * @param id the id of the cadastros to delete
      * @return the ResponseEntity with status 200 (OK)
      */
-    @RequestMapping(value = "/cadastros/{id}",
-        method = RequestMethod.DELETE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/cadastros/{id}")
     @Timed
     public ResponseEntity<Void> deleteCadastros(@PathVariable Long id) {
         log.debug("REST request to delete Cadastros : {}", id);
         cadastrosRepository.delete(id);
         cadastrosSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("cadastros", id.toString())).build();
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
     /**
@@ -151,14 +142,12 @@ public class CadastrosResource {
      * to the query.
      *
      * @param query the query of the cadastros search
+     * @param pageable the pagination information
      * @return the result of the search
      */
-    @RequestMapping(value = "/_search/cadastros",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/_search/cadastros")
     @Timed
-    public ResponseEntity<List<Cadastros>> searchCadastros(@RequestParam String query, Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Cadastros>> searchCadastros(@RequestParam String query, @ApiParam Pageable pageable) {
         log.debug("REST request to search for a page of Cadastros for query {}", query);
         Page<Cadastros> page = cadastrosSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/cadastros");

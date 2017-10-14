@@ -1,0 +1,100 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myCadastrosLabel">Create or edit a Cadastros</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!cadastros.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="cadastros.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_nome">Nome</label>
+            <input type="text" class="form-control" name="nome" id="field_nome"
+                [(ngModel)]="cadastros.nome" required maxlength="100" />
+            <div [hidden]="!(editForm.controls.nome?.dirty && editForm.controls.nome?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.nome?.errors?.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.nome?.errors?.maxlength">
+                   This field cannot be longer than 100 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_tipoPessoa">Tipo Pessoa</label>
+            <select class="form-control" name="tipoPessoa" [(ngModel)]="cadastros.tipoPessoa" id="field_tipoPessoa"  required>
+                <option value="FISICA">FISICA</option>
+                <option value="JURIDICA">JURIDICA</option>
+            </select>
+            <div [hidden]="!(editForm.controls.tipoPessoa?.dirty && editForm.controls.tipoPessoa?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.tipoPessoa?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_tipoCadastro">Tipo Cadastro</label>
+            <select class="form-control" name="tipoCadastro" [(ngModel)]="cadastros.tipoCadastro" id="field_tipoCadastro"  required>
+                <option value="CLIENTE">CLIENTE</option>
+                <option value="FORNECEDOR">FORNECEDOR</option>
+                <option value="VENDEDOR">VENDEDOR</option>
+            </select>
+            <div [hidden]="!(editForm.controls.tipoCadastro?.dirty && editForm.controls.tipoCadastro?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.tipoCadastro?.errors?.required">
+                   This field is required.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_cpfcnpj">Cpfcnpj</label>
+            <input type="text" class="form-control" name="cpfcnpj" id="field_cpfcnpj"
+                [(ngModel)]="cadastros.cpfcnpj" maxlength="14" />
+            <div [hidden]="!(editForm.controls.cpfcnpj?.dirty && editForm.controls.cpfcnpj?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.cpfcnpj?.errors?.maxlength">
+                   This field cannot be longer than 14 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_email">Email</label>
+            <input type="text" class="form-control" name="email" id="field_email"
+                [(ngModel)]="cadastros.email" maxlength="100" />
+            <div [hidden]="!(editForm.controls.email?.dirty && editForm.controls.email?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.email?.errors?.maxlength">
+                   This field cannot be longer than 100 characters.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_observacoes">Observacoes</label>
+            <input type="text" class="form-control" name="observacoes" id="field_observacoes"
+                [(ngModel)]="cadastros.observacoes" maxlength="500" />
+            <div [hidden]="!(editForm.controls.observacoes?.dirty && editForm.controls.observacoes?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.observacoes?.errors?.maxlength">
+                   This field cannot be longer than 500 characters.
+                </small>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

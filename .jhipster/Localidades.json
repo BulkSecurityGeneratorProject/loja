@@ -1,58 +1,62 @@
 {
-  "relationships": [],
-  "fields": [
-    {
-      "fieldId": 1,
-      "fieldName": "endereco",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required",
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 60
-    },
-    {
-      "fieldId": 2,
-      "fieldName": "cep",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required",
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 9
-    },
-    {
-      "fieldId": 3,
-      "fieldName": "bairro",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required",
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 60
-    },
-    {
-      "fieldId": 4,
-      "fieldName": "cidade",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required",
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 60
-    },
-    {
-      "fieldId": 5,
-      "fieldName": "uF",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "maxlength"
-      ],
-      "fieldValidateRulesMaxlength": 2
-    }
-  ],
-  "changelogDate": "20160606195941",
-  "dto": "no",
-  "pagination": "infinite-scroll",
-  "service": "no"
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "cadastrosLocalidades",
+            "otherEntityName": "cadastrosLocalidades",
+            "otherEntityRelationshipName": "localidade"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "cep",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 9
+        },
+        {
+            "fieldName": "endereco",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 60
+        },
+        {
+            "fieldName": "bairro",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 60
+        },
+        {
+            "fieldName": "cidade",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 60
+        },
+        {
+            "fieldName": "uF",
+            "fieldType": "Estados",
+            "fieldValues": "AC,AL,AM,AP,BA,CE,DF,ES,GO,MA,MG,MS,MT,PA,PB,PE,PI,PR,RJ,RN,RO,RR,RS,SC,SE,SP,TO",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20171014023054",
+    "entityTableName": "localidades",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
 }

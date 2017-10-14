@@ -1,32 +1,27 @@
 {
-  "relationships": [
-    {
-      "relationshipId": 1,
-      "relationshipName": "gradeProdutos",
-      "otherEntityName": "gradeProdutos",
-      "relationshipType": "one-to-many",
-      "otherEntityRelationshipName": "categorias"
-    },
-    {
-      "relationshipId": 2,
-      "relationshipName": "produtos",
-      "otherEntityName": "produtos",
-      "relationshipType": "one-to-many",
-      "otherEntityRelationshipName": "categorias"
-    }
-  ],
-  "fields": [
-    {
-      "fieldId": 1,
-      "fieldName": "descricao",
-      "fieldType": "String",
-      "fieldValidateRules": [
-        "required"
-      ]
-    }
-  ],
-  "changelogDate": "20160606195935",
-  "dto": "no",
-  "pagination": "infinite-scroll",
-  "service": "no"
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "produtos",
+            "otherEntityName": "produtos",
+            "otherEntityRelationshipName": "categorias"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "descricao",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 30
+        }
+    ],
+    "changelogDate": "20171014023057",
+    "entityTableName": "categorias",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
 }

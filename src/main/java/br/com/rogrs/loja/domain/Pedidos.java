@@ -27,7 +27,8 @@ public class Pedidos implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
     @NotNull
@@ -52,6 +53,7 @@ public class Pedidos implements Serializable {
     @ManyToOne
     private Cadastros cadastros;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -64,12 +66,22 @@ public class Pedidos implements Serializable {
         return dataPedido;
     }
 
+    public Pedidos dataPedido(LocalDate dataPedido) {
+        this.dataPedido = dataPedido;
+        return this;
+    }
+
     public void setDataPedido(LocalDate dataPedido) {
         this.dataPedido = dataPedido;
     }
 
     public TipoPedido getTipoPedido() {
         return tipoPedido;
+    }
+
+    public Pedidos tipoPedido(TipoPedido tipoPedido) {
+        this.tipoPedido = tipoPedido;
+        return this;
     }
 
     public void setTipoPedido(TipoPedido tipoPedido) {
@@ -80,12 +92,34 @@ public class Pedidos implements Serializable {
         return descricao;
     }
 
+    public Pedidos descricao(String descricao) {
+        this.descricao = descricao;
+        return this;
+    }
+
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
     public Set<Itens> getItens() {
         return itens;
+    }
+
+    public Pedidos itens(Set<Itens> itens) {
+        this.itens = itens;
+        return this;
+    }
+
+    public Pedidos addItens(Itens itens) {
+        this.itens.add(itens);
+        itens.setPedidos(this);
+        return this;
+    }
+
+    public Pedidos removeItens(Itens itens) {
+        this.itens.remove(itens);
+        itens.setPedidos(null);
+        return this;
     }
 
     public void setItens(Set<Itens> itens) {
@@ -96,9 +130,15 @@ public class Pedidos implements Serializable {
         return cadastros;
     }
 
+    public Pedidos cadastros(Cadastros cadastros) {
+        this.cadastros = cadastros;
+        return this;
+    }
+
     public void setCadastros(Cadastros cadastros) {
         this.cadastros = cadastros;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -109,24 +149,24 @@ public class Pedidos implements Serializable {
             return false;
         }
         Pedidos pedidos = (Pedidos) o;
-        if(pedidos.id == null || id == null) {
+        if (pedidos.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(id, pedidos.id);
+        return Objects.equals(getId(), pedidos.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hashCode(getId());
     }
 
     @Override
     public String toString() {
         return "Pedidos{" +
-            "id=" + id +
-            ", dataPedido='" + dataPedido + "'" +
-            ", tipoPedido='" + tipoPedido + "'" +
-            ", descricao='" + descricao + "'" +
-            '}';
+            "id=" + getId() +
+            ", dataPedido='" + getDataPedido() + "'" +
+            ", tipoPedido='" + getTipoPedido() + "'" +
+            ", descricao='" + getDescricao() + "'" +
+            "}";
     }
 }

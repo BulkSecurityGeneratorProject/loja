@@ -4,7 +4,7 @@ import br.com.rogrs.loja.domain.Cores;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the Cores entity.
+ * Spring Data Elasticsearch repository for the Cores entity.
  */
 public interface CoresSearchRepository extends ElasticsearchRepository<Cores, Long> {
 }
