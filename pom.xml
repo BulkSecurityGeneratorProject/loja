@@ -14,6 +14,30 @@
     <version>0.0.2-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Loja</name>
+    <url>http://rogrs.github.io/loja/</url>
+    <description>Projeto para pequenas lojas</description>
+    <scm>
+    	<url>http://rogrs.github.io/loja</url>
+    	<connection>scm:git:git://github.com/rogrs/loja.git</connection>
+    	<developerConnection>scm:git:git@github.com:rogrs/loja.git</developerConnection>
+    	<tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+    	<system>GitHub Issues</system>
+    	<url>https://github.com/rogrs/loja/issues</url>
+    </issueManagement>
+    
+    <developers>
+        <developer>
+            <id>rogrs</id>
+            <name>Rogerio Ribeiro</name>
+            <email>rogerio.rs@gmail.com</email>
+        </developer>
+    </developers>
+
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
     <properties>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx256m</argLine>
@@ -1056,16 +1080,5 @@
             </dependencies>
         </profile>
     </profiles>
-    <url>http://rogrs.github.io/loja/</url>
-    <description>Projeto para pequenas lojas</description>
-    <scm>
-    	<url>http://rogrs.github.io/loja</url>
-    	<connection>scm:git:git://github.com/rogrs/loja.git</connection>
-    	<developerConnection>scm:git:git@github.com:rogrs/loja.git</developerConnection>
-    	<tag>HEAD</tag>
-    </scm>
-    <issueManagement>
-    	<system>GitHub Issues</system>
-    	<url>https://github.com/rogrs/loja/issues</url>
-    </issueManagement>
+
 </project>
