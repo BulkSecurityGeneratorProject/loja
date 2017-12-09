@@ -13,6 +13,12 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+logging:
+    level:
+        ROOT: INFO
+        br.com.rogrs.loja: INFO
+        io.github.jhipster: INFO
+
 spring:
     devtools:
         restart:
@@ -63,8 +69,8 @@ liquibase:
 #    ssl:
 #        key-store: keystore.p12
 #        key-store-password: <your-password>
-#        keyStoreType: PKCS12
-#        keyAlias: loja
+#        key-store-type: PKCS12
+#        key-alias: loja
 # ===================================================================
 server:
     port: 8080
@@ -91,7 +97,7 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: 9509739d3dd7cd51e2c408acbd710f25baa85785
+                secret: 36e091464c496ad93b0d8aa9f6bb44c3bab87f99
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000

@@ -3,6 +3,8 @@ import { Title } from '@angular/platform-browser';
 
 import {
     LojaSharedLibsModule,
+    JhiLanguageHelper,
+    FindLanguageFromKeyPipe,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
@@ -12,18 +14,21 @@ import {
         LojaSharedLibsModule
     ],
     declarations: [
+        FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
     providers: [
+        JhiLanguageHelper,
         Title,
         {
             provide: LOCALE_ID,
-            useValue: 'en'
+            useValue: 'pt-br'
         },
     ],
     exports: [
         LojaSharedLibsModule,
+        FindLanguageFromKeyPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]

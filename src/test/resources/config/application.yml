@@ -64,10 +64,6 @@ spring:
 liquibase:
     contexts: test
 
-security:
-    basic:
-        enabled: false
-
 server:
     port: 10344
     address: localhost
@@ -100,7 +96,7 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: 9509739d3dd7cd51e2c408acbd710f25baa85785
+                secret: 36e091464c496ad93b0d8aa9f6bb44c3bab87f99
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration

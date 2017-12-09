@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed, async, inject, tick, fakeAsync } from '@angular/core/testing';
-import { Renderer, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
+
+import { JhiLanguageService } from 'ng-jhipster';
+import { MockLanguageService } from '../../../helpers/mock-language.service';
 import { LojaTestModule } from '../../../test.module';
-import { LoginModalService } from '../../../../../../main/webapp/app/shared';
+import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from '../../../../../../main/webapp/app/shared';
 import { Register } from '../../../../../../main/webapp/app/account/register/register.service';
 import { RegisterComponent } from '../../../../../../main/webapp/app/account/register/register.component';
 
@@ -17,21 +19,10 @@ describe('Component Tests', () => {
                 imports: [LojaTestModule],
                 declarations: [RegisterComponent],
                 providers: [
-                    Register,
-                    {
-                        provide: LoginModalService,
-                        useValue: null
-                    },
-                    {
-                        provide: Renderer,
-                        useValue: null
-                    },
-                    {
-                        provide: ElementRef,
-                        useValue: null
-                    }
+                    Register
                 ]
-            }).overrideTemplate(RegisterComponent, '')
+            })
+            .overrideTemplate(RegisterComponent, '')
             .compileComponents();
         }));
 
@@ -51,8 +42,8 @@ describe('Component Tests', () => {
         });
 
         it('should update success to OK after creating an account',
-            inject([Register],
-                fakeAsync((service: Register) => {
+            inject([Register, JhiLanguageService],
+                fakeAsync((service: Register, mockTranslate: MockLanguageService) => {
                     spyOn(service, 'save').and.returnValue(Observable.of({}));
                     comp.registerAccount.password = comp.confirmPassword = 'password';
 
@@ -61,10 +52,11 @@ describe('Component Tests', () => {
 
                     expect(service.save).toHaveBeenCalledWith({
                         password: 'password',
-                        langKey: 'en'
+                        langKey: 'pt-br'
                     });
                     expect(comp.success).toEqual(true);
-                    expect(comp.registerAccount.langKey).toEqual('en');
+                    expect(comp.registerAccount.langKey).toEqual('pt-br');
+                    expect(mockTranslate.getCurrentSpy).toHaveBeenCalled();
                     expect(comp.errorUserExists).toBeNull();
                     expect(comp.errorEmailExists).toBeNull();
                     expect(comp.error).toBeNull();
@@ -77,7 +69,9 @@ describe('Component Tests', () => {
                 fakeAsync((service: Register) => {
                     spyOn(service, 'save').and.returnValue(Observable.throw({
                         status: 400,
-                        _body: 'login already in use'
+                        json() {
+                            return {type : LOGIN_ALREADY_USED_TYPE}
+                        }
                     }));
                     comp.registerAccount.password = comp.confirmPassword = 'password';
 
@@ -96,7 +90,9 @@ describe('Component Tests', () => {
                 fakeAsync((service: Register) => {
                     spyOn(service, 'save').and.returnValue(Observable.throw({
                         status: 400,
-                        _body: 'email address already in use'
+                        json() {
+                            return {type : EMAIL_ALREADY_USED_TYPE}
+                        }
                     }));
                     comp.registerAccount.password = comp.confirmPassword = 'password';
 

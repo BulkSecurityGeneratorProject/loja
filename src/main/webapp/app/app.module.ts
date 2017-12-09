@@ -1,14 +1,15 @@
 import './vendor.ts';
+
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Ng2Webstorage } from 'ng2-webstorage';
+import { Ng2Webstorage } from 'ngx-webstorage';
 
 import { LojaSharedModule, UserRouteAccessService } from './shared';
+import { LojaAppRoutingModule} from './app-routing.module';
 import { LojaHomeModule } from './home/home.module';
 import { LojaAdminModule } from './admin/admin.module';
 import { LojaAccountModule } from './account/account.module';
 import { LojaEntityModule } from './entities/entity.module';
-
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
@@ -16,18 +17,18 @@ import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
 import {
     JhiMainComponent,
-    LayoutRoutingModule,
     NavbarComponent,
     FooterComponent,
     ProfileService,
     PageRibbonComponent,
+    ActiveMenuDirective,
     ErrorComponent
 } from './layouts';
 
 @NgModule({
     imports: [
         BrowserModule,
-        LayoutRoutingModule,
+        LojaAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         LojaSharedModule,
         LojaHomeModule,
@@ -41,6 +42,7 @@ import {
         NavbarComponent,
         ErrorComponent,
         PageRibbonComponent,
+        ActiveMenuDirective,
         FooterComponent
     ],
     providers: [

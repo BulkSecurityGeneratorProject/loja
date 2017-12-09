@@ -1,9 +1,10 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "br.com.rogrs.loja"
+      "packageName": "br.com.rogrs.loja",
+      "nativeLanguage": "pt-br"
     },
-    "jhipsterVersion": "4.9.0",
+    "jhipsterVersion": "4.12.0",
     "baseName": "loja",
     "packageName": "br.com.rogrs.loja",
     "packageFolder": "br/com/rogrs/loja",
@@ -20,8 +21,8 @@
     "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSocialSignIn": false,
-    "enableSwaggerCodegen": true,
-    "jwtSecretKey": "9509739d3dd7cd51e2c408acbd710f25baa85785",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "36e091464c496ad93b0d8aa9f6bb44c3bab87f99",
     "clientFramework": "angularX",
     "useSass": false,
     "clientPackageManager": "yarn",
@@ -30,6 +31,11 @@
       "gatling"
     ],
     "jhiPrefix": "jhi",
-    "enableTranslation": false
+    "enableTranslation": true,
+    "nativeLanguage": "pt-br",
+    "languages": [
+      "pt-br",
+      "pt-pt"
+    ]
   }
 }

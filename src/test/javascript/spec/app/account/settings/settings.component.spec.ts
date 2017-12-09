@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { Observable } from 'rxjs/Rx';
+
 import { LojaTestModule } from '../../../test.module';
 import { Principal, AccountService } from '../../../../../../main/webapp/app/shared';
 import { SettingsComponent } from '../../../../../../main/webapp/app/account/settings/settings.component';
-import { MockAccountService } from '../../../helpers/mock-account.service';
-import { MockPrincipal } from '../../../helpers/mock-principal.service';
 
 describe('Component Tests', () => {
 
@@ -20,16 +19,9 @@ describe('Component Tests', () => {
                 imports: [LojaTestModule],
                 declarations: [SettingsComponent],
                 providers: [
-                    {
-                        provide: Principal,
-                        useClass: MockPrincipal
-                    },
-                    {
-                        provide: AccountService,
-                        useClass: MockAccountService
-                    },
                 ]
-            }).overrideTemplate(SettingsComponent, '')
+            })
+            .overrideTemplate(SettingsComponent, '')
             .compileComponents();
         }));
 
@@ -48,7 +40,7 @@ describe('Component Tests', () => {
 
                 activated: true,
                 email: 'john.doe@mail.com',
-                langKey: 'en',
+                langKey: 'pt-br',
                 login: 'john'
             };
             mockPrincipal.setResponse(accountValues);

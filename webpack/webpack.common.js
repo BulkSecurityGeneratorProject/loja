@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StringReplacePlugin = require('string-replace-webpack-plugin');
+const MergeJsonWebpackPlugin = require("merge-jsons-webpack-plugin");
 
 const utils = require('./utils.js');
 
@@ -11,7 +12,7 @@ module.exports = (options) => {
         DEBUG_INFO_ENABLED: options.env === 'development',
         // The root URL for API calls, ending with a '/' - for example: `"http://www.jhipster.tech:8081/myservice/"`.
         // If this URL is left empty (""), then it will be relative to the current context.
-        // If you use an API server, in `prod` mode, you will need to enable CORS  
+        // If you use an API server, in `prod` mode, you will need to enable CORS
         // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
         SERVER_API_URL: `""`
     };
@@ -83,7 +84,7 @@ module.exports = (options) => {
              * See: https://github.com/angular/angular/issues/11580
              */
             new webpack.ContextReplacementPlugin(
-                /angular(\\|\/)core(\\|\/)@angular/,
+                /(.+)?angular(\\|\/)core(.+)?/,
                 utils.root('src/main/webapp/app'), {}
             ),
             new CopyWebpackPlugin([
@@ -93,12 +94,21 @@ module.exports = (options) => {
                 { from: './src/main/webapp/swagger-ui/', to: 'swagger-ui' },
                 { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
                 { from: './src/main/webapp/manifest.webapp', to: 'manifest.webapp' },
-                // { from: './src/main/webapp/sw.js', to: 'sw.js' },
+                // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
                 { from: './src/main/webapp/robots.txt', to: 'robots.txt' }
             ]),
             new webpack.ProvidePlugin({
                 $: "jquery",
                 jQuery: "jquery"
+            }),
+            new MergeJsonWebpackPlugin({
+                output: {
+                    groupBy: [
+                        { pattern: "./src/main/webapp/i18n/pt-br/*.json", fileName: "./i18n/pt-br.json" },
+                        { pattern: "./src/main/webapp/i18n/pt-pt/*.json", fileName: "./i18n/pt-pt.json" }
+                        // jhipster-needle-i18n-language-webpack - JHipster will add/remove languages in this array
+                    ]
+                }
             }),
             new HtmlWebpackPlugin({
                 template: './src/main/webapp/index.html',

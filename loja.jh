@@ -26,27 +26,18 @@ entity Localidades {
 
 
 entity Cadastros {
-	    nome String required maxlength(100),
-        tipoPessoa TipoPessoa required,
-        tipoCadastro TipoCadastro required,
-        cpf_cnpj String maxlength(14),
-        email String maxlength(100),
-        observacoes String maxlength(500),
-        
+	nome String required maxlength(100),
+    tipoPessoa TipoPessoa required,
+    tipoCadastro TipoCadastro required,
+    cpf_cnpj String maxlength(14),
+    email String maxlength(100),
+    observacoes String maxlength(500)   
 }
 
 entity CadastrosLocalidades {
-      numero String required maxlength(20),
-      complemento String required maxlength(30),
-      referencias String maxlength(80)
-}
-
-relationship OneToMany {
-  Cadastros{cadastrosLocalidades} to CadastrosLocalidades{cadastro(nome)}
-}
-
-relationship OneToMany {
-  Localidades{cadastrosLocalidades} to CadastrosLocalidades{localidade(cep)}
+    numero String required maxlength(20),
+    complemento String required maxlength(30),
+    referencias String maxlength(80)
 }
 
 entity Categorias {
@@ -87,30 +78,14 @@ entity Itens {
 
 
 relationship OneToMany {
-  Marcas{produtos} to Produtos{marcas(descricao)}
-}
-
-relationship OneToMany {
-  Categorias{produtos} to Produtos{categorias(descricao)}
-}
-
-relationship OneToMany {
-  Cores{produtos} to Produtos{cores(descricao)}
-}
-
-relationship OneToMany {
-  Tamanhos{produtos} to Produtos{tamanhos(descricao)}
-}
-
-relationship OneToMany {
-  Cadastros{pedidos} to Pedidos{cadastros(nome)}
-}
-
-relationship OneToMany {
-  Pedidos{itens} to Itens{pedidos(descricao)}
-}
-
-relationship OneToMany {
+  Cadastros{cadastrosLocalidades} to CadastrosLocalidades{cadastro(nome)},
+  Localidades{cadastrosLocalidades} to CadastrosLocalidades{localidade(cep)},
+  Marcas{produtos} to Produtos{marcas(descricao)},
+  Categorias{produtos} to Produtos{categorias(descricao)},
+  Cores{produtos} to Produtos{cores(descricao)},
+  Tamanhos{produtos} to Produtos{tamanhos(descricao)},
+  Cadastros{pedidos} to Pedidos{cadastros(nome)},
+  Pedidos{itens} to Itens{pedidos(descricao)},
   Produtos{itens} to Itens{produtos(descricao)}
 }
 
@@ -118,4 +93,5 @@ relationship OneToMany {
 
 
 paginate * with infinite-scroll
+
 

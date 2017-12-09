@@ -41,25 +41,6 @@ public class CacheConfiguration {
             cm.createCache(br.com.rogrs.loja.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(br.com.rogrs.loja.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(br.com.rogrs.loja.domain.User.class.getName() + ".authorities", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Localidades.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Localidades.class.getName() + ".cadastrosLocalidades", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Cadastros.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Cadastros.class.getName() + ".cadastrosLocalidades", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Cadastros.class.getName() + ".pedidos", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.CadastrosLocalidades.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Categorias.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Categorias.class.getName() + ".produtos", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Marcas.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Marcas.class.getName() + ".produtos", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Tamanhos.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Tamanhos.class.getName() + ".produtos", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Cores.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Cores.class.getName() + ".produtos", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Produtos.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Produtos.class.getName() + ".itens", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Pedidos.class.getName(), jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Pedidos.class.getName() + ".itens", jcacheConfiguration);
-            cm.createCache(br.com.rogrs.loja.domain.Itens.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }
