@@ -1,0 +1,26 @@
+{
+    "lojaApp": {
+        "itens" : {
+            "home": {
+                "title": "Itens",
+                "createLabel": "Criar um(a) novo(a) Itens",
+                "createOrEditLabel": "Criar ou editar um(a) Itens",
+                "search": "Search for Itens"
+            },
+            "created": "A new Itens is created with identifier {{ param }}",
+            "updated": "A Itens is updated with identifier {{ param }}",
+            "deleted": "A Itens is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Itens {{ id }}?"
+            },
+            "detail": {
+                "title": "Itens"
+            },
+            "qtde": "Qtde",
+            "valor": "Valor",
+            "valorDesconto": "Valor Desconto",
+            "pedidos": "Pedidos",
+            "produtos": "Produtos"
+        }
+    }
+}

@@ -1,5 +1,6 @@
 # loja
 [![Build Status](https://travis-ci.org/rogrs/loja.svg?branch=master)](https://travis-ci.org/rogrs/loja) [![Dependency Status](https://david-dm.org/rogrs/loja.svg)](https://david-dm.org/rogrs/loja) [![devDependency Status](https://david-dm.org/rogrs/loja/dev-status.svg)](https://david-dm.org/rogrs/loja#info=devDependencies) [![peerDependency Status](https://david-dm.org/rogrs/loja/peer-status.svg)](https://david-dm.org/rogrs/loja#info=peerDependencies) [![peerDependency Status](https://david-dm.org/rogrs/loja/peer-status.svg)](https://david-dm.org/rogrs/loja#info=peerDependencies) [![codecov](https://codecov.io/gh/rogrs/loja/branch/master/graph/badge.svg)](https://codecov.io/gh/rogrs/loja)
+
 This application was generated using JHipster 4.12.0, you can find documentation and help at [http://www.jhipster.tech/documentation-archive/v4.12.0](http://www.jhipster.tech/documentation-archive/v4.12.0).
 
 ## Development

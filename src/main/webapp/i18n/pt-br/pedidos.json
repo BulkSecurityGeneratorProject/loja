@@ -1,0 +1,26 @@
+{
+    "lojaApp": {
+        "pedidos" : {
+            "home": {
+                "title": "Pedidos",
+                "createLabel": "Criar novo Pedidos",
+                "createOrEditLabel": "Criar ou editar Pedidos",
+                "search": "Pesquisar por Pedidos"
+            },
+            "created": "Um novo Pedidos foi criado com o identificador {{ param }}",
+            "updated": "Um Pedidos foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Pedidos foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Pedidos {{ id }}?"
+            },
+            "detail": {
+                "title": "Pedidos"
+            },
+            "dataPedido": "Data Pedido",
+            "tipoPedido": "Tipo Pedido",
+            "descricao": "Descricao",
+            "itens": "Itens",
+            "cadastros": "Cadastros"
+        }
+    }
+}

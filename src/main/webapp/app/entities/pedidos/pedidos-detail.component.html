@@ -1,0 +1,40 @@
+
+<div *ngIf="pedidos">
+    <h2><span jhiTranslate="lojaApp.pedidos.detail.title">Pedidos</span> {{pedidos.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="lojaApp.pedidos.dataPedido">Data Pedido</span></dt>
+        <dd>
+            <span>{{pedidos.dataPedido | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.pedidos.tipoPedido">Tipo Pedido</span></dt>
+        <dd>
+            <span jhiTranslate="{{'lojaApp.TipoPedido.' + pedidos.tipoPedido}}">{{pedidos.tipoPedido}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.pedidos.descricao">Descricao</span></dt>
+        <dd>
+            <span>{{pedidos.descricao}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.pedidos.cadastros">Cadastros</span></dt>
+        <dd>
+            <div *ngIf="pedidos.cadastros">
+                <a [routerLink]="['/cadastros', pedidos.cadastros?.id]">{{pedidos.cadastros?.nome}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'pedidos/'+ pedidos.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

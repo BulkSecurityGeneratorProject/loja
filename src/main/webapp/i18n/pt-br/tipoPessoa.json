@@ -1,0 +1,9 @@
+{
+    "lojaApp": {
+        "TipoPessoa" : {
+            "null": "",
+            "FISICA": "FISICA",
+            "JURIDICA": "JURIDICA"
+        }
+    }
+}

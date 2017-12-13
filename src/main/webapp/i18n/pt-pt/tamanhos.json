@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "tamanhos" : {
+            "home": {
+                "title": "Tamanhos",
+                "createLabel": "Criar um(a) novo(a) Tamanhos",
+                "createOrEditLabel": "Criar ou editar um(a) Tamanhos",
+                "search": "Search for Tamanhos"
+            },
+            "created": "A new Tamanhos is created with identifier {{ param }}",
+            "updated": "A Tamanhos is updated with identifier {{ param }}",
+            "deleted": "A Tamanhos is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Tamanhos {{ id }}?"
+            },
+            "detail": {
+                "title": "Tamanhos"
+            },
+            "descricao": "Descricao",
+            "produtos": "Produtos"
+        }
+    }
+}

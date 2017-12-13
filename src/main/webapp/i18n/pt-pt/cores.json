@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "cores" : {
+            "home": {
+                "title": "Cores",
+                "createLabel": "Criar um(a) novo(a) Cores",
+                "createOrEditLabel": "Criar ou editar um(a) Cores",
+                "search": "Search for Cores"
+            },
+            "created": "A new Cores is created with identifier {{ param }}",
+            "updated": "A Cores is updated with identifier {{ param }}",
+            "deleted": "A Cores is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Cores {{ id }}?"
+            },
+            "detail": {
+                "title": "Cores"
+            },
+            "descricao": "Descricao",
+            "produtos": "Produtos"
+        }
+    }
+}

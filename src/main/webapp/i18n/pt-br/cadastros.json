@@ -1,0 +1,29 @@
+{
+    "lojaApp": {
+        "cadastros" : {
+            "home": {
+                "title": "Cadastros",
+                "createLabel": "Criar novo Cadastros",
+                "createOrEditLabel": "Criar ou editar Cadastros",
+                "search": "Pesquisar por Cadastros"
+            },
+            "created": "Um novo Cadastros foi criado com o identificador {{ param }}",
+            "updated": "Um Cadastros foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Cadastros foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Cadastros {{ id }}?"
+            },
+            "detail": {
+                "title": "Cadastros"
+            },
+            "nome": "Nome",
+            "tipoPessoa": "Tipo Pessoa",
+            "tipoCadastro": "Tipo Cadastro",
+            "cpfcnpj": "Cpfcnpj",
+            "email": "Email",
+            "observacoes": "Observacoes",
+            "cadastrosLocalidades": "Cadastros Localidades",
+            "pedidos": "Pedidos"
+        }
+    }
+}

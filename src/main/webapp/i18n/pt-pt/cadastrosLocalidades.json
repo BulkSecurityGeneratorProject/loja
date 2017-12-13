@@ -1,0 +1,26 @@
+{
+    "lojaApp": {
+        "cadastrosLocalidades" : {
+            "home": {
+                "title": "Cadastros Localidades",
+                "createLabel": "Criar um(a) novo(a) Cadastros Localidades",
+                "createOrEditLabel": "Criar ou editar um(a) Cadastros Localidades",
+                "search": "Search for Cadastros Localidades"
+            },
+            "created": "A new Cadastros Localidades is created with identifier {{ param }}",
+            "updated": "A Cadastros Localidades is updated with identifier {{ param }}",
+            "deleted": "A Cadastros Localidades is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Tem a certeza que pretende eliminar o(a) Cadastros Localidades {{ id }}?"
+            },
+            "detail": {
+                "title": "Cadastros Localidades"
+            },
+            "numero": "Numero",
+            "complemento": "Complemento",
+            "referencias": "Referencias",
+            "cadastro": "Cadastro",
+            "localidade": "Localidade"
+        }
+    }
+}

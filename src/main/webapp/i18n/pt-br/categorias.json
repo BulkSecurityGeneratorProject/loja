@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "categorias" : {
+            "home": {
+                "title": "Categorias",
+                "createLabel": "Criar novo Categorias",
+                "createOrEditLabel": "Criar ou editar Categorias",
+                "search": "Pesquisar por Categorias"
+            },
+            "created": "Um novo Categorias foi criado com o identificador {{ param }}",
+            "updated": "Um Categorias foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Categorias foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Categorias {{ id }}?"
+            },
+            "detail": {
+                "title": "Categorias"
+            },
+            "descricao": "Descricao",
+            "produtos": "Produtos"
+        }
+    }
+}

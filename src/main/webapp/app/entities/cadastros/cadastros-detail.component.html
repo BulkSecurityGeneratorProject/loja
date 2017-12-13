@@ -1,0 +1,46 @@
+
+<div *ngIf="cadastros">
+    <h2><span jhiTranslate="lojaApp.cadastros.detail.title">Cadastros</span> {{cadastros.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="lojaApp.cadastros.nome">Nome</span></dt>
+        <dd>
+            <span>{{cadastros.nome}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.cadastros.tipoPessoa">Tipo Pessoa</span></dt>
+        <dd>
+            <span jhiTranslate="{{'lojaApp.TipoPessoa.' + cadastros.tipoPessoa}}">{{cadastros.tipoPessoa}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.cadastros.tipoCadastro">Tipo Cadastro</span></dt>
+        <dd>
+            <span jhiTranslate="{{'lojaApp.TipoCadastro.' + cadastros.tipoCadastro}}">{{cadastros.tipoCadastro}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.cadastros.cpfcnpj">Cpfcnpj</span></dt>
+        <dd>
+            <span>{{cadastros.cpfcnpj}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.cadastros.email">Email</span></dt>
+        <dd>
+            <span>{{cadastros.email}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.cadastros.observacoes">Observacoes</span></dt>
+        <dd>
+            <span>{{cadastros.observacoes}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'cadastros/'+ cadastros.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

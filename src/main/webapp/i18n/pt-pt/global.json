@@ -7,6 +7,16 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entidades",
+                "localidades": "Localidades",
+                "cadastros": "Cadastros",
+                "cadastrosLocalidades": "Cadastros Localidades",
+                "categorias": "Categorias",
+                "marcas": "Marcas",
+                "tamanhos": "Tamanhos",
+                "cores": "Cores",
+                "produtos": "Produtos",
+                "pedidos": "Pedidos",
+                "itens": "Itens",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

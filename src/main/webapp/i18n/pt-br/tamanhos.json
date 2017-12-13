@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "tamanhos" : {
+            "home": {
+                "title": "Tamanhos",
+                "createLabel": "Criar novo Tamanhos",
+                "createOrEditLabel": "Criar ou editar Tamanhos",
+                "search": "Pesquisar por Tamanhos"
+            },
+            "created": "Um novo Tamanhos foi criado com o identificador {{ param }}",
+            "updated": "Um Tamanhos foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Tamanhos foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Tamanhos {{ id }}?"
+            },
+            "detail": {
+                "title": "Tamanhos"
+            },
+            "descricao": "Descricao",
+            "produtos": "Produtos"
+        }
+    }
+}

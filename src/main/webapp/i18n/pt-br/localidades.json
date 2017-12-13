@@ -1,0 +1,27 @@
+{
+    "lojaApp": {
+        "localidades" : {
+            "home": {
+                "title": "Localidades",
+                "createLabel": "Criar novo Localidades",
+                "createOrEditLabel": "Criar ou editar Localidades",
+                "search": "Pesquisar por Localidades"
+            },
+            "created": "Um novo Localidades foi criado com o identificador {{ param }}",
+            "updated": "Um Localidades foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Localidades foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Localidades {{ id }}?"
+            },
+            "detail": {
+                "title": "Localidades"
+            },
+            "cep": "Cep",
+            "endereco": "Endereco",
+            "bairro": "Bairro",
+            "cidade": "Cidade",
+            "uF": "U F",
+            "cadastrosLocalidades": "Cadastros Localidades"
+        }
+    }
+}

@@ -1,0 +1,74 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myItensLabel" jhiTranslate="lojaApp.itens.home.createOrEditLabel">Create or edit a Itens</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!itens.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="itens.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="lojaApp.itens.qtde" for="field_qtde">Qtde</label>
+            <input type="number" class="form-control" name="qtde" id="field_qtde"
+                [(ngModel)]="itens.qtde" required/>
+            <div [hidden]="!(editForm.controls.qtde?.dirty && editForm.controls.qtde?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.qtde?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.qtde?.errors?.number" jhiTranslate="entity.validation.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="lojaApp.itens.valor" for="field_valor">Valor</label>
+            <input type="number" class="form-control" name="valor" id="field_valor"
+                [(ngModel)]="itens.valor" required/>
+            <div [hidden]="!(editForm.controls.valor?.dirty && editForm.controls.valor?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.valor?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.valor?.errors?.number" jhiTranslate="entity.validation.number">
+                    This field should be a number.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="lojaApp.itens.valorDesconto" for="field_valorDesconto">Valor Desconto</label>
+            <input type="number" class="form-control" name="valorDesconto" id="field_valorDesconto"
+                [(ngModel)]="itens.valorDesconto" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="lojaApp.itens.pedidos" for="field_pedidos">Pedidos</label>
+            <select class="form-control" id="field_pedidos" name="pedidos" [(ngModel)]="itens.pedidos" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="pedidosOption.id === itens.pedidos?.id ? itens.pedidos : pedidosOption" *ngFor="let pedidosOption of pedidos; trackBy: trackPedidosById">{{pedidosOption.descricao}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="lojaApp.itens.produtos" for="field_produtos">Produtos</label>
+            <select class="form-control" id="field_produtos" name="produtos" [(ngModel)]="itens.produtos" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="produtosOption.id === itens.produtos?.id ? itens.produtos : produtosOption" *ngFor="let produtosOption of produtos; trackBy: trackProdutosById">{{produtosOption.descricao}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

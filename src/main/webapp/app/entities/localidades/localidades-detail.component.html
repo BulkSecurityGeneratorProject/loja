@@ -1,0 +1,42 @@
+
+<div *ngIf="localidades">
+    <h2><span jhiTranslate="lojaApp.localidades.detail.title">Localidades</span> {{localidades.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="lojaApp.localidades.cep">Cep</span></dt>
+        <dd>
+            <span>{{localidades.cep}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.localidades.endereco">Endereco</span></dt>
+        <dd>
+            <span>{{localidades.endereco}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.localidades.bairro">Bairro</span></dt>
+        <dd>
+            <span>{{localidades.bairro}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.localidades.cidade">Cidade</span></dt>
+        <dd>
+            <span>{{localidades.cidade}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.localidades.uF">U F</span></dt>
+        <dd>
+            <span jhiTranslate="{{'lojaApp.Estados.' + localidades.uF}}">{{localidades.uF}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'localidades/'+ localidades.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

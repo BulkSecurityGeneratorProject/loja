@@ -1,0 +1,43 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "pedidos",
+            "otherEntityName": "pedidos",
+            "otherEntityField": "descricao"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "produtos",
+            "otherEntityName": "produtos",
+            "otherEntityField": "descricao"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "qtde",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "valor",
+            "fieldType": "BigDecimal",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "valorDesconto",
+            "fieldType": "BigDecimal"
+        }
+    ],
+    "changelogDate": "20171211114752",
+    "entityTableName": "itens",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

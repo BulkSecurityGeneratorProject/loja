@@ -1,0 +1,46 @@
+
+<div *ngIf="itens">
+    <h2><span jhiTranslate="lojaApp.itens.detail.title">Itens</span> {{itens.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="lojaApp.itens.qtde">Qtde</span></dt>
+        <dd>
+            <span>{{itens.qtde}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.itens.valor">Valor</span></dt>
+        <dd>
+            <span>{{itens.valor}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.itens.valorDesconto">Valor Desconto</span></dt>
+        <dd>
+            <span>{{itens.valorDesconto}}</span>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.itens.pedidos">Pedidos</span></dt>
+        <dd>
+            <div *ngIf="itens.pedidos">
+                <a [routerLink]="['/pedidos', itens.pedidos?.id]">{{itens.pedidos?.descricao}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="lojaApp.itens.produtos">Produtos</span></dt>
+        <dd>
+            <div *ngIf="itens.produtos">
+                <a [routerLink]="['/produtos', itens.produtos?.id]">{{itens.produtos?.descricao}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'itens/'+ itens.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

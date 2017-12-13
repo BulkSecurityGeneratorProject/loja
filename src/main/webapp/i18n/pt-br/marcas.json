@@ -1,0 +1,23 @@
+{
+    "lojaApp": {
+        "marcas" : {
+            "home": {
+                "title": "Marcas",
+                "createLabel": "Criar novo Marcas",
+                "createOrEditLabel": "Criar ou editar Marcas",
+                "search": "Pesquisar por Marcas"
+            },
+            "created": "Um novo Marcas foi criado com o identificador {{ param }}",
+            "updated": "Um Marcas foi atualizado com o identificador {{ param }}",
+            "deleted": "Um Marcas foi deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Marcas {{ id }}?"
+            },
+            "detail": {
+                "title": "Marcas"
+            },
+            "descricao": "Descricao",
+            "produtos": "Produtos"
+        }
+    }
+}
