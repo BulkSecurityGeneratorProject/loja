@@ -36,6 +36,7 @@
     "languages": [
       "pt-br",
       "pt-pt"
-    ]
+    ],
+    "herokuAppName": "app-loja"
   }
 }
