@@ -65,7 +65,7 @@ Unit tests are run by [Karma][] and written with [Jasmine][]. They're located in
 
 ![picture](https://github.com/rogrs/loja/blob/master/loja.png)
 
-### Urls para Apis
+
 
 [Gatling]: http://gatling.io/
 [Node.js]: https://nodejs.org/
