@@ -6,7 +6,7 @@
             "home": "Início",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
-                "main": "Entidades",
+                "main": "Cadastros",
                 "localidades": "Localidades",
                 "cadastros": "Cadastros",
                 "cadastrosLocalidades": "Cadastros Localidades",
@@ -138,5 +138,5 @@
         "emailexists": "Email is already in use!",
         "idexists": "A new {{entityName}} cannot already have an ID"
     },
-    "footer": "Este é o seu rodapé"
+    "footer": "Desenvolvido por <a target=\"_blank\" href=\"https://www.linkedin.com/in/rogrs83\">Rogério Ribeiro</a>"
 }
